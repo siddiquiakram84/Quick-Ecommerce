@@ -30,5 +30,10 @@ return [
     'max_age' => 0,
 
     'supports_credentials' => false,
+    'sanctum' => [
+        'include_credentials' => true,
+        'origins' => ['http://localhost', 'https://your-app.com'],
+    ],
+    
 
 ];
