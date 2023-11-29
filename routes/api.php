@@ -9,6 +9,12 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminRegisterController;
+use App\Http\Controllers\UserRegisterController;
+
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,20 +25,23 @@ use App\Http\Controllers\CartController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+
 // EnsureFrontendRequestsAreStateful middleware is essential for stateful authentication
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/admin-login', [AuthController::class, 'adminLogin']);
+Route::post('/user-login', [AuthController::class, 'userLogin']);
+Route::post('/admin-register', [AdminRegisterController::class, 'register']);
+Route::post('/user-register', [UserRegisterController::class, 'register']);
 
-// Route::post('/user', function(){
-//     return response()->json("Post api hit sucessfully");
-// });
 
-// Route::delete('/user/{id}', function($id){
-//     return response("delete" . $id, 200);
-// });
-// Route::put('/user/{id}', function($id){
-//     return response('Put'. $id, 200);
-// });
+
+
+
+
+
+
+
+
 // Users
 Route::resource('users', UserController::class);
 
