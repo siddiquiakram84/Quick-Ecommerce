@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\UserAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
@@ -9,11 +11,6 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderProductController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AdminRegisterController;
-use App\Http\Controllers\UserRegisterController;
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -28,11 +25,19 @@ use App\Http\Controllers\UserRegisterController;
 
 
 // EnsureFrontendRequestsAreStateful middleware is essential for stateful authentication
-Route::post('/admin-login', [AuthController::class, 'adminLogin']);
-Route::post('/user-login', [AuthController::class, 'userLogin']);
-Route::post('/admin-register', [AdminRegisterController::class, 'register']);
-Route::post('/user-register', [UserRegisterController::class, 'register']);
 
+
+// Group for Admin routes
+Route::prefix('admin')->group(function () {
+    Route::post('/login', [AdminAuthController::class, 'login']);
+    Route::post('/register', [AdminAuthController::class, 'register']);
+});
+
+// Group for User routes
+Route::prefix('user')->group(function () {
+    Route::post('/login', [UserAuthController::class, 'login']);
+    Route::post('/register', [UserAuthController::class, 'register']);
+});
 
 
 
