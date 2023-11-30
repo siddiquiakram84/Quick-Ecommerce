@@ -2,40 +2,27 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the seeder.
-     */
-    public function run(): void
+    public function run()
     {
-        // Seed an admin user
-        User::create([
-            'name' => 'john doe',
-            'email' => 'johndoe@example.com',
-            'password' => 'admin_password',
+        // Creating 5 admin users
+        User::factory(5)->create([
             'phone' => '1234567890',
             'role' => 'admin',
-            'status' => 1, // Assuming 1 represents an active status
-            // ... other attributes
+            'status' => 1,
+            // Add other fillable attributes here
         ]);
 
-        // Seed a non-admin user
-        User::create([
-            'name' => 'jane doe',
-            'email' => 'janedoe@example.com',
-            'password' => 'user_password',
-            'phone' => '9876543210',
+        // Creating 5 regular user accounts
+        User::factory(5)->create([
+            'phone' => '1234567890',
             'role' => 'user',
-            'status' => 1, // Assuming 1 represents an active status
-            // ... other attributes
+            'status' => 1,
+            // Add other fillable attributes here
         ]);
-
-        // Seed additional users if needed
     }
 }

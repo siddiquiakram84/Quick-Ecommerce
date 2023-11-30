@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderProductController;
 use App\Http\Controllers\CartController;
+use App\Models\Product;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,7 +61,7 @@ Route::resource('orders', OrderController::class);
 Route::resource('products', ProductController::class);
 
 // OrderProducts
-Route::resource('order_products', OrderProductController::class);
+Route::resource('order/products', OrderProductController::class);
 
 // Carts
 Route::resource('carts', CartController::class);

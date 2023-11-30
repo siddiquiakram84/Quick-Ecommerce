@@ -1,21 +1,19 @@
 <?php
 
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        $this->call([
-            UserSeeder::class,
-            CategorySeeder::class,
-            OrderSeeder::class,
-            ProductSeeder::class,
-            OrderProductSeeder::class,
-            CartSeeder::class,
-        ]);
+        $this->call(UserSeeder::class);
+        $this->call(CategorySeeder::class);
+        $this->call(OrderSeeder::class);
+        $this->call(ProductSeeder::class);
+        $this->call(OrderProductSeeder::class);
+        $this->call(CartSeeder::class);
     }
 }

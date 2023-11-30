@@ -1,17 +1,15 @@
 <?php
-
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\OrderProduct;
 
 class OrderProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-        //
+        OrderProduct::factory(30)->create([
+            // Add other fillable attributes here
+        ]);
     }
 }

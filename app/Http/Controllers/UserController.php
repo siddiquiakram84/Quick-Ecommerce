@@ -4,49 +4,61 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
     public function index()
     {
         $users = User::all();
-        return view('users.index', compact('users'));
+        return response()->json($users, 200);
     }
 
-    public function create()
+    public function show($id)
     {
-        return view('users.create');
+        $user = User::findOrFail($id);
+        return response()->json($user, 200);
     }
 
     public function store(Request $request)
     {
-        // Validate and store user data
-        // ...
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+            'phone' => 'nullable|string|max:20',
+            'role' => 'required|integer',
+            'status' => 'required|integer',
+        ]);
 
-        return redirect()->route('users.index')->with('success', 'User created successfully');
+        $user = User::create($validatedData);
+
+        return response()->json($user, 201);
     }
 
-    public function show(User $user)
+    public function update(Request $request, $id)
     {
-        return view('users.show', compact('user'));
+        $user = User::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'name' => 'string|max:255',
+            'email' => ['email', Rule::unique('users')->ignore($user->id)],
+            'password' => 'string|min:6',
+            'phone' => 'nullable|string|max:20',
+            'role' => 'integer',
+            'status' => 'integer',
+        ]);
+
+        $user->update($validatedData);
+
+        return response()->json($user, 200);
     }
 
-    public function edit(User $user)
+    public function destroy($id)
     {
-        return view('users.edit', compact('user'));
-    }
-
-    public function update(Request $request, User $user)
-    {
-        // Validate and update user data
-        // ...
-
-        return redirect()->route('users.index')->with('success', 'User updated successfully');
-    }
-
-    public function destroy(User $user)
-    {
+        $user = User::findOrFail($id);
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'User deleted successfully');
+
+        return response()->json(null, 204);
     }
 }
