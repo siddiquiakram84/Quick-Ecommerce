@@ -38,12 +38,21 @@ class AdminAuthController extends Controller
     
     public function login(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users', // Assuming 'users' table is used for both admin and non-admin users
+            'password' => 'required|min:6',
+            'phone' => 'nullable|string|max:20',
+            'role' => 'required|string', // Assuming role is required for admin
+            'status' => 'required|integer',
+        ]);
+
         $credentials = $request->only('email', 'password');
 
         if (Auth::guard('web')->attempt($credentials)) {
             $user = Auth::user();
 
-            // Check if the user has the 'admin' role    "'"
+            // Check if the user has the 'admin' role
             if ($user->role == 'admin') {
                 $token = $user->createToken('admin_auth_token')->plainTextToken;
 

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +16,7 @@ class UserAuthController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'phone' => 'nullable|string|max:20',
-            'role' => 'required|integer',
+            'role' => 'required|string',
             'status' => 'required|integer',
             // Add any other validation rules as needed
         ]);
@@ -33,12 +32,17 @@ class UserAuthController extends Controller
 
         return response()->json(['user' => $user], 201);
     }
-    
+
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ]);
+
         $credentials = $request->only('email', 'password');
 
-        if (Auth::guard('web')->attempt($credentials)) {
+        if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('user_auth_token')->plainTextToken;
 
@@ -47,5 +51,4 @@ class UserAuthController extends Controller
 
         return response()->json(['error' => 'Invalid credentials'], 401);
     }
-
 }

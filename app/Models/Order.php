@@ -13,4 +13,14 @@ class Order extends Model
         'user_id', 'total_price', 'status', 'payment_status', 'delivery_address', 'delivery_method',
         // Add other attributes here if needed
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'order_products')->withPivot('quantity');
+    }
 }

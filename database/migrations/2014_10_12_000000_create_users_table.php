@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('role')->nullable();
             $table->integer('status');
-            $table->string('remember_token')->nullable();
+            // $table->string('remember_token')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
     }
