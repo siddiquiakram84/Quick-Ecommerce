@@ -13,20 +13,13 @@ class CheckIsAdmin
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
-    {
-        if (auth()->user() && auth()->user()->hasRole('admin')) {
-            return $next($request);
-        }
-    
-        return response()->json(['error' => 'Unauthorized'], 401);
+    public function handle(Request $request, Closure $next)
+{
+    if (auth()->user() && auth()->user()->hasRole('admin')) {
+        return $next($request);
     }
-}
-// public function handle(Request $request, Closure $next)
-// {
-//     if (auth()->user() && auth()->user()->hasRole('admin')) {
-//         return $next($request);
-//     }
 
-//     return response()->json(['error' => 'Unauthorized'], 401);
-// }
+    return response()->json(['error' => 'Unauthorized'], 401);
+}
+}
+

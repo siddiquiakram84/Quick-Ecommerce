@@ -27,7 +27,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
             'phone' => 'nullable|string|max:20',
-            'role' => 'required|integer',
+            'role' => 'required|string',
             'status' => 'required|integer',
         ]);
 
@@ -45,7 +45,7 @@ class UserController extends Controller
             'email' => ['email', Rule::unique('users')->ignore($user->id)],
             'password' => 'string|min:6',
             'phone' => 'nullable|string|max:20',
-            'role' => 'integer',
+            'role' => 'string',
             'status' => 'integer',
         ]);
 
