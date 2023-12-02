@@ -14,25 +14,18 @@ class AdminAuthController extends Controller
 {
     public function register(Request $request)
 {
-    try {
         $validatedData = $request->validate([
             'name' => 'required|string',
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users'),
+                'unique:users'
             ],
             'password' => 'required|min:6',
             'phone' => 'nullable|string|max:20',
             'role' => 'required|string',
             'status' => 'required|integer',
         ]);
-
-        // Check if the user already exists
-        $existingUser = User::where('email', $validatedData['email'])->first();
-        if ($existingUser) {
-            return response()->json(['error' => 'User with this email already exists.', 'user' => $existingUser], 422);
-        }
 
         // If the user doesn't exist, proceed with registration
         $newUser = User::create([
@@ -45,9 +38,6 @@ class AdminAuthController extends Controller
         ]);
 
         return response()->json(['user' => $newUser, 'message' => 'User registered successfully.'], 201);
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Error during user registration.', 'message' => $e->getMessage()], 500);
-    }
 }
     
     public function login(Request $request)
