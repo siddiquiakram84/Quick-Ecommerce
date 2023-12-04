@@ -33,6 +33,9 @@ Route::prefix('admin')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login']);
     Route::post('/register', [AdminAuthController::class, 'register']);
 
+    // Admin routes for managing customers/users
+    Route::resource('/user', UserController::class);
+
     // Admin routes for managing products
     Route::resource('products', ProductController::class);
 
@@ -41,9 +44,6 @@ Route::prefix('admin')->group(function () {
 
     // Admin routes for managing orders
     Route::resource('orders', OrderController::class);
-
-    // Admin routes for managing customers
-    Route::resource('customers', UserController::class);
 
     // Admin Dashboard route
     Route::get('/dashboard', [DashboardController::class, 'index']);
@@ -67,30 +67,23 @@ Route::prefix('user')->group(function () {
 });
 
 
+// // Users
+// Route::resource('users', UserController::class);
 
+// // Categories
+// Route::resource('categories', CategoryController::class);
 
+// // Orders
+// Route::resource('orders', OrderController::class);
 
+// // Products
+// Route::resource('products', ProductController::class);
 
+// // OrderProducts
+// Route::resource('order/products', OrderProductController::class);
 
-
-
-// Users
-Route::resource('users', UserController::class);
-
-// Categories
-Route::resource('categories', CategoryController::class);
-
-// Orders
-Route::resource('orders', OrderController::class);
-
-// Products
-Route::resource('products', ProductController::class);
-
-// OrderProducts
-Route::resource('order/products', OrderProductController::class);
-
-// Carts
-Route::resource('carts', CartController::class);
+// // Carts
+// Route::resource('carts', CartController::class);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::resource('products', 'ProductController');

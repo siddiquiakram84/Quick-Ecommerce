@@ -32,7 +32,16 @@ class UserAuthController extends Controller
             'status' => $request->status,
         ]);
 
-        return response()->json(['user' => $user, 'message' => 'User registered successfully.'], 201);
+        // return response()->json(['user' => $user, 'message' => 'User registered successfully.'], 201);
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->name,
+                'email' => $user->email,
+            ],
+        ]);
     }
 
     public function login(Request $request)
