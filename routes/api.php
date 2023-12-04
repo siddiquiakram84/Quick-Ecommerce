@@ -66,6 +66,15 @@ Route::prefix('user')->group(function () {
     Route::post('/orders/place', [OrderController::class, 'placeOrder']);
 });
 
+Route::prefix('user')->group(function () {
+    Route::get('/categories', 'UserController@listCategories');
+    Route::get('/products', 'UserController@listProducts');
+    Route::get('/products/{id}', 'UserController@viewProduct');
+    Route::post('/cart/add', 'UserController@addToCart');
+    Route::post('/order/place', 'UserController@placeOrder');
+    Route::get('/orders', 'UserController@viewOrders');
+});
+
 
 // // Users
 // Route::resource('users', UserController::class);

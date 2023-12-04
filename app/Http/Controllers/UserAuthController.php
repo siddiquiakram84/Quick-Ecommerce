@@ -36,11 +36,7 @@ class UserAuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
-            'user' => [
-                'id' => $user->id,
-                'username' => $user->name,
-                'email' => $user->email,
-            ],
+            'user' => $user,
         ]);
     }
 
@@ -56,11 +52,7 @@ class UserAuthController extends Controller
                 'success' => true,
                 'message' => 'Login successful',
                 'token' => $token,
-                'user' => [
-                    'id' => $user->id,
-                    'username' => $user->name,
-                    'email' => $user->email,
-                ],
+                'user' => $user,
             ]);
         }
 

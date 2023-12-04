@@ -56,11 +56,7 @@ class AdminAuthController extends Controller
                     'success' => true,
                     'message' => 'Login successful',
                     'token' => $token,
-                    'user' => [
-                        'id' => $user->id,
-                        'username' => $user->name,
-                        'email' => $user->email,
-                    ],
+                    'user' => $user,
                 ]);
             }
         }
