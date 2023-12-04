@@ -51,7 +51,15 @@ class UserController extends Controller
 
         $user->update($validatedData);
 
-        return response()->json($user, 200);
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->name,
+                'email' => $user->email,
+            ],
+        ]);
     }
 
     public function destroy($id)

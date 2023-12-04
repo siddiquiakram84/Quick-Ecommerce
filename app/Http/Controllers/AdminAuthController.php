@@ -65,8 +65,10 @@ class AdminAuthController extends Controller
             }
         }
 
-        return response()->json(['error' => 'Invalid admin credentials'], 401);
-    }
-
-
+        // If authentication fails
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid credentials',
+        ], 401);
+        }
 }
