@@ -42,7 +42,7 @@ Route::prefix('admin')->group(function () {
     // Admin routes for managing categories
     Route::resource('categories', CategoryController::class);
 
-    // Admin routes for managing orders
+    // Admin routes for managing orders      
     Route::resource('orders', OrderController::class);
 
     // Admin Dashboard route
