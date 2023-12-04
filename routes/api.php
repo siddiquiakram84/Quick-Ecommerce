@@ -32,12 +32,38 @@ use App\Models\Product;
 Route::prefix('admin')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login']);
     Route::post('/register', [AdminAuthController::class, 'register']);
+
+    // Admin routes for managing products
+    Route::resource('products', ProductController::class);
+
+    // Admin routes for managing categories
+    Route::resource('categories', CategoryController::class);
+
+    // Admin routes for managing orders
+    Route::resource('orders', OrderController::class);
+
+    // Admin routes for managing customers
+    Route::resource('customers', UserController::class);
+
+    // Admin Dashboard route
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+
 });
 
 // Group for User routes
 Route::prefix('user')->group(function () {
     Route::post('/login', [UserAuthController::class, 'login']);
     Route::post('/register', [UserAuthController::class, 'register']);
+
+    // User routes for viewing categories and products
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/products/{id}', [ProductController::class, 'show']);
+
+    // User routes for managing the shopping cart
+    Route::post('/cart/add', [CartController::class, 'addProduct']);
+    Route::get('/my-orders', [OrderController::class, 'userOrders']);
+    Route::post('/orders/place', [OrderController::class, 'placeOrder']);
 });
 
 

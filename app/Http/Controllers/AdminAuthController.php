@@ -47,11 +47,21 @@ class AdminAuthController extends Controller
         if (Auth::guard('web')->attempt($credentials)) {
             $user = Auth::user();
 
-            // Check if the user has the 'admin' role    "'"
+            // Check if the user has the 'admin' role
             if ($user->role == 'admin') {
                 $token = $user->createToken('admin_auth_token')->plainTextToken;
 
-                return response()->json(['token' => $token], 200);
+                // return response()->json(['token' => $token], 200);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login successful',
+                    'token' => $token,
+                    'user' => [
+                        'id' => $user->id,
+                        'username' => $user->name,
+                        'email' => $user->email,
+                    ],
+                ]);
             }
         }
 
