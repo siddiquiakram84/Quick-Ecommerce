@@ -12,33 +12,33 @@ use Illuminate\Validation\Rule;
 
 class AdminAuthController extends Controller
 {
-    public function register(Request $request)
-{
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'email' => [
-                'required',
-                'email',
-                'unique:users'
-            ],
-            'password' => 'required|min:6',
-            'phone' => 'nullable|string|max:20',
-            'role' => 'required|string',
-            'status' => 'required|integer',
-        ]);
+//     public function register(Request $request)
+// {
+//         $validatedData = $request->validate([
+//             'name' => 'required|string',
+//             'email' => [
+//                 'required',
+//                 'email',
+//                 'unique:users'
+//             ],
+//             'password' => 'required|min:6',
+//             'phone' => 'nullable|string|max:20',
+//             'role' => 'required|string',
+//             'status' => 'required|integer',
+//         ]);
 
-        // If the user doesn't exist, proceed with registration
-        $newUser = User::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
-            'phone' => $validatedData['phone'],
-            'role' => $validatedData['role'],
-            'status' => $validatedData['status'],
-        ]);
+//         // If the user doesn't exist, proceed with registration
+//         $newUser = User::create([
+//             'name' => $validatedData['name'],
+//             'email' => $validatedData['email'],
+//             'password' => Hash::make($validatedData['password']),
+//             'phone' => $validatedData['phone'],
+//             'role' => $validatedData['role'],
+//             'status' => $validatedData['status'],
+//         ]);
 
-        return response()->json(['user' => $newUser, 'message' => 'User registered successfully.'], 201);
-}
+//         return response()->json(['user' => $newUser, 'message' => 'User registered successfully.'], 201);
+// }
     
     public function login(Request $request)
     {

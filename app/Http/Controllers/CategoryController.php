@@ -10,13 +10,17 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::all();
-        return response()->json($categories, 200);
+        $resp['success'] = true;
+        $resp['data'] = $categories;
+        return response()->json($resp, 200);
     }
 
     public function show($id)
     {
         $category = Category::findOrFail($id);
-        return response()->json($category, 200);
+        $resp['success'] = true;
+        $resp['data'] = $category;
+        return response()->json($resp, 200);
     }
 
     public function store(Request $request)
@@ -28,7 +32,9 @@ class CategoryController extends Controller
 
         $category = Category::create($validatedData);
 
-        return response()->json($category, 201);
+        $resp['success'] = true;
+        $resp['data'] = $category;
+        return response()->json($resp, 200);
     }
 
     public function update(Request $request, $id)
@@ -42,14 +48,16 @@ class CategoryController extends Controller
 
         $category->update($validatedData);
 
-        return response()->json($category, 200);
+        $resp['success'] = true;
+        $resp['data'] = $category;
+        return response()->json($resp, 200);
     }
 
     public function destroy($id)
     {
         $category = Category::findOrFail($id);
         $category->delete();
-
-        return response()->json(null, 204);
+        $resp['success'] = true;
+        return response()->json($resp, 204);
     }
 }

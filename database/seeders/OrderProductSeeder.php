@@ -9,7 +9,6 @@ class OrderProductSeeder extends Seeder
     public function run()
     {
         OrderProduct::factory(30)->create([
-            // Add other fillable attributes here
         ]);
     }
 }
