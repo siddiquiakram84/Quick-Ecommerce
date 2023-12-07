@@ -24,8 +24,8 @@ class OrderController extends Controller
         $validatedData = $request->validate([
             'user_id' => 'required|exists:users,id',
             'total_price' => 'required|numeric',
-            'status' => 'integer',
-            'payment_status' => 'integer',
+            'status' => 'required|string|in:Delivered,Pending,Processing',
+            'payment_status' => 'required|string|in:Paid,Pending,Processing',
             'delivery_address' => 'nullable|string',
             'delivery_method' => 'nullable|string',
         ]);
@@ -42,8 +42,8 @@ class OrderController extends Controller
         $validatedData = $request->validate([
             'user_id' => 'exists:users,id',
             'total_price' => 'numeric',
-            'status' => 'integer',
-            'payment_status' => 'integer',
+            'status' => 'string|in:Delivered,Pending,Processing',
+            'payment_status' => 'string|in:Paid,Pending,Processing',
             'delivery_address' => 'nullable|string',
             'delivery_method' => 'nullable|string',
         ]);
@@ -59,5 +59,46 @@ class OrderController extends Controller
         $order->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function placeOrder(Request $request)
+    {
+        // Assume the request contains product_ids and quantities for the ordered products
+        $productIds = $request->input('product_ids');
+        $quantities = $request->input('quantities');
+
+        // Validate inputs
+        $request->validate([
+            'product_ids' => 'required|array',
+            'quantities' => 'required|array',
+            'product_ids.*' => 'exists:products,id',
+            'quantities.*' => 'integer|min:1',
+        ]);
+
+        // Logic to place an order (you may save this information in the database)
+
+        return response()->json(['message' => 'Order placed successfully']);
+    }
+
+    public function viewOrders()
+    {
+        // Assume you have an authentication system, and you get the user ID from the authenticated user
+        $userId = auth()->id();
+
+        // Fetch orders for the authenticated user
+        $orders = Order::where('user_id', $userId)->get();
+
+        return response()->json(['orders' => $orders]);
+    }
+
+    public function viewOrder($id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+
+        return response()->json(['order' => $order]);
     }
 }

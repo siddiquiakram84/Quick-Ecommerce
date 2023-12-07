@@ -18,8 +18,8 @@ class UserAuthController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'phone' => 'nullable|string|max:20',
-            'role' => 'required|string',
-            'status' => 'required|integer',
+            'role' => ['required', Rule::in([0, 1])], // 0 for user, 1 for admin
+        'status' => ['required', Rule::in([0, 1])], // 0 for inactive, 1 for active
         ]);
 
         // If the user doesn't exist, proceed with registration

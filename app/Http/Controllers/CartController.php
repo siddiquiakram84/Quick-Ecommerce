@@ -54,4 +54,22 @@ class CartController extends Controller
 
         return response()->json(null, 204);
     }
+
+    public function addToCart(Request $request)
+    {
+        // Assume the request contains product_id and quantity
+        $productId = $request->input('product_id');
+        $quantity = $request->input('quantity');
+
+        // Validate inputs
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        // Logic to add the product to the user's cart (you may save this information in the database)
+
+        return response()->json(['message' => 'Product added to cart successfully']);
+    }
+
 }

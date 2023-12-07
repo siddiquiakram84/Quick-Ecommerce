@@ -12,6 +12,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderProductController;
 use App\Http\Controllers\CartController;
 use App\Models\Product;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +35,8 @@ Route::prefix('admin')->group(function () {
     Route::post('/register', [AdminAuthController::class, 'register']);
 
     // Admin routes for managing customers/users
-    Route::resource('/user', UserController::class);
+    Route::get('/user', [UserController::class, 'index']);
+    Route::post('/user', [UserController::class, 'store']);
 
     // Admin routes for managing products
     Route::resource('products', ProductController::class);
@@ -50,49 +52,18 @@ Route::prefix('admin')->group(function () {
 
 });
 
-// Group for User routes
 Route::prefix('user')->group(function () {
     Route::post('/login', [UserAuthController::class, 'login']);
     Route::post('/register', [UserAuthController::class, 'register']);
+    Route::get('/categories', [CategoryController::class, 'listCategories']);
+    Route::get('/products', [ProductController::class, 'listProducts']);
+    Route::get('/product/{id}', [ProductController::class, 'viewProduct']);
+    Route::post('/cart/add', [CartController::class, 'addToCart']);
+    Route::post('/order/place', [OrderController::class, 'placeOrder']);
+    Route::get('/orders', [OrderController::class, 'viewOrders']);
+    Route::get('/orders/{id}', [OrderController::class, 'viewOrder']);
 
-    // User routes for viewing categories and products
-    Route::get('/categories', [CategoryController::class, 'index']);
-    Route::get('/products', [ProductController::class, 'index']);
-    Route::get('/products/{id}', [ProductController::class, 'show']);
-
-    // User routes for managing the shopping cart
-    Route::post('/cart/add', [CartController::class, 'addProduct']);
-    Route::get('/my-orders', [OrderController::class, 'userOrders']);
-    Route::post('/orders/place', [OrderController::class, 'placeOrder']);
 });
-
-Route::prefix('user')->group(function () {
-    Route::get('/categories', 'UserController@listCategories');
-    Route::get('/products', 'UserController@listProducts');
-    Route::get('/products/{id}', 'UserController@viewProduct');
-    Route::post('/cart/add', 'UserController@addToCart');
-    Route::post('/order/place', 'UserController@placeOrder');
-    Route::get('/orders', 'UserController@viewOrders');
-});
-
-
-// // Users
-// Route::resource('users', UserController::class);
-
-// // Categories
-// Route::resource('categories', CategoryController::class);
-
-// // Orders
-// Route::resource('orders', OrderController::class);
-
-// // Products
-// Route::resource('products', ProductController::class);
-
-// // OrderProducts
-// Route::resource('order/products', OrderProductController::class);
-
-// // Carts
-// Route::resource('carts', CartController::class);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::resource('products', 'ProductController');

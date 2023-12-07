@@ -10,8 +10,8 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'total_price', 'status',  'payment_status', 'delivery_address',
-        // Add other attributes here if needed  
+        'user_id', 'total_price', 'status', 'payment_status', 'delivery_address', 'delivery_method',
+        // Add other attributes here if needed
     ];
 
     public function user()
@@ -22,5 +22,10 @@ class Order extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'order_products')->withPivot('quantity');
+    }
+    
+    public function orderStatus()
+    {
+        return $this->belongsTo(OrderStatus::class, 'status');
     }
 }

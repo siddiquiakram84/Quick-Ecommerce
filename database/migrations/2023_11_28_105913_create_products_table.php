@@ -18,19 +18,6 @@ class CreateProductsTable extends Migration
             $table->string('image');
             $table->timestamps();
         });
-
-        // Schema::create('products', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->unsignedBigInteger('category_id');
-        //     $table->string('name');
-        //     $table->text('description')->nullable();
-        //     $table->decimal('price', 8, 2);
-        //     $table->integer('quantity_in_stock');
-        //     $table->string('image')->nullable();
-        //     $table->timestamps();
-
-        //     $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-        // });
     }
 
     public function down()

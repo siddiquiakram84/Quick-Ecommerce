@@ -12,11 +12,13 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->decimal('total_price', 8, 2);
-            $table->integer('status');
-            $table->string('payment_status');
+            $table->enum('status', ['Delivered', 'Pending', 'Processing']);
+            $table->tinyInteger('payment_status')->default(0); // 0: Pending, 1: Paid
             $table->text('delivery_address');
+            $table->text('delivery_method');
             $table->timestamps();
 
+            // Define foreign key constraints
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

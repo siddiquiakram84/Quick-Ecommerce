@@ -61,4 +61,15 @@ class ProductController extends Controller
 
         return response()->json(null, 204);
     }
+
+    public function viewProduct($id)
+    {
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        return response()->json(['product' => $product]);
+    }
 }

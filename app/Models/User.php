@@ -32,6 +32,18 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    // Enum classes for role and status
+    public const ROLE_USER = 0;
+    public const ROLE_ADMIN = 1;
+
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_INACTIVE = 0;
+
+    public function isAdmin()
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
     /**
      * The attributes that should be cast.
      *
