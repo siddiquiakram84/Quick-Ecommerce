@@ -13,9 +13,20 @@ class DashboardController extends Controller
     {
         $products = Product::all();
         $categories = Category::all();
+        $userCount = User::count(); // Example: Count of users
 
-        // Return data as JSON response
-        return response()->json([$products, $categories
-        ], 200);
+        // Standardized response format
+        $response = [
+            'status' => 'success',
+            'message' => 'Data retrieved successfully',
+            'data' => [
+                'products' => $products,
+                'categories' => $categories,
+                'user_count' => $userCount,
+            ],
+        ];
+
+        // Return data as JSON response with a 200 status code
+        return response()->json($response, 200);
     }
 }

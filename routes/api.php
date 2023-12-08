@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\DashboardController;
 use App\Models\Product;
 use App\Models\User;
 
