@@ -7,22 +7,17 @@ use App\Models\User;
 
 class UserSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
     public function run()
     {
-        // Creating 5 admin users
-        User::factory(5)->create([
-            'phone' => '1234567890',
-            'role' => 'admin',
-            'status' => 1,
-            // Add other fillable attributes here
-        ]);
+        // Seed 50 regular users
+        User::factory(50)->create();
 
-        // Creating 5 regular user accounts
-        User::factory(5)->create([
-            'phone' => '1234567890',
-            'role' => 'user',
-            'status' => 1,
-            // Add other fillable attributes here
-        ]);
+        // Seed 50 admin users
+        User::factory(50)->admin()->create();
     }
 }

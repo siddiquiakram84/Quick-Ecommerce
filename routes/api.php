@@ -31,6 +31,7 @@ use App\Models\User;
 
 
 // Group for Admin routes
+
 Route::prefix('admin')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login']);
     Route::post('/register', [AdminAuthController::class, 'register']);
@@ -38,6 +39,11 @@ Route::prefix('admin')->group(function () {
     // Admin routes for managing customers/users
     Route::get('/user', [UserController::class, 'index']);
     Route::post('/user', [UserController::class, 'store']);
+    Route::put('/user/{id}', [UserController::class, 'update']);
+    // You can also use PATCH method
+    // Route::patch('/user/{id}', [UserController::class, 'update']);
+    // Delete a user
+    Route::delete('/user/{id}', [UserController::class, 'destroy']);
 
     // Admin routes for managing products
     Route::resource('products', ProductController::class);

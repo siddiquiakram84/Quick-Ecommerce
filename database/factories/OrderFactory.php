@@ -12,15 +12,12 @@ class OrderFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => function () {
-                return \App\Models\User::factory()->create(['status' => 1])->id; // Set a default status or adjust as needed
-            },
-            'total_price' => $this->faker->randomFloat(2, 50, 200),
-            'status' => $this->faker->randomElement([1, 2, 3]),
-            'payment_status' => $this->faker->randomElement([1, 2, 3]),
+            'user_id' => 0, // Default, will be overridden in the seeder
+            'total_price' => $this->faker->randomFloat(2, 10, 500),
+            'status' => $this->faker->randomElement(['Delivered', 'Pending', 'Processing']),
+            'payment_status' => $this->faker->randomElement([0, 1]),
             'delivery_address' => $this->faker->address,
             'delivery_method' => $this->faker->word,
-            // Add other attributes here
         ];
     }
 }

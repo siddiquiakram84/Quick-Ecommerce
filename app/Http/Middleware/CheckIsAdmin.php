@@ -15,7 +15,7 @@ class CheckIsAdmin
      */
     public function handle(Request $request, Closure $next)
 {
-    if (auth()->user() && auth()->user()->hasRole('admin')) {
+    if (auth()->user() && auth()->user()) {
         return $next($request);
     }
 

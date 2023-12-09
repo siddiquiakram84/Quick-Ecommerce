@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -11,18 +10,19 @@ use Illuminate\Validation\Rule;
 
 class UserAuthController extends Controller
 {
-    public function register(Request $request){
-
+    public function register(Request $request)
+    {
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'phone' => 'nullable|string|max:20',
-            'role' => ['required', Rule::in([0, 1])], // 0 for user, 1 for admin
-        'status' => ['required', Rule::in([0, 1])], // 0 for inactive, 1 for active
         ]);
 
-        // If the user doesn't exist, proceed with registration
+        // Set default role and status for regular users
+        $request->merge(['role' => User::ROLE_USER, 'status' => User::STATUS_ACTIVE]);
+
+        // Create user
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -32,19 +32,24 @@ class UserAuthController extends Controller
             'status' => $request->status,
         ]);
 
-        // return response()->json(['user' => $user, 'message' => 'User registered successfully.'], 201);
+        $token = $user->createToken('user_auth_token')->plainTextToken;
+
         return response()->json([
             'success' => true,
-            'message' => 'Login successful',
+            'message' => 'User registered successfully',
+            'token' => $token,
             'user' => $user,
         ]);
     }
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-        if (Auth::guard('web')->attempt($credentials)) {
+        if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('user_auth_token')->plainTextToken;
 
@@ -58,5 +63,4 @@ class UserAuthController extends Controller
 
         return response()->json(['error' => 'Invalid credentials'], 401);
     }
-
 }

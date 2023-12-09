@@ -11,4 +11,12 @@ class Cart extends Model
     protected $fillable = [
         'user_id', 'order_id', 'status', 'total_price',
     ];
+
+    // Define the many-to-many relationship with Product
+    public function products()
+    {
+        return $this->belongsToMany(Product::class)
+            ->withPivot('quantity', 'unit_price')
+            ->withTimestamps();
+    }
 }

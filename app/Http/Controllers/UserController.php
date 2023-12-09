@@ -33,8 +33,8 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
             'phone' => 'nullable|string|max:20',
-            'role' => 'required|string',
-            'status' => 'required|integer',
+            'role' => 'required|integer|size:1', // 0 for user, 1 for admin
+            'status' => 'required|integer|size:1', // 0 for inactive, 1 for active
         ]);
 
         $user = User::create($validatedData);
@@ -44,24 +44,21 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
-
+        // Validate inputs
         $validatedData = $request->validate([
-            'name' => 'string|max:255',
-            'email' => ['email', Rule::unique('users')->ignore($user->id)],
-            'password' => 'string|min:6',
-            'phone' => 'nullable|string|max:20',
-            'role' => 'string',
-            'status' => 'integer',
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $id,
+            // Add other fields as needed
         ]);
-
+    
+        // Find the user
+        $user = User::findOrFail($id);
+    
+        // Update the user with validated data
         $user->update($validatedData);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Login successful',
-            'user' => $user,
-        ]);
+    
+        // Return a success response
+        return response()->json(['message' => 'User updated successfully', 'user' => $user], 200);
     }
 
     public function destroy($id)

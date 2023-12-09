@@ -11,7 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, HasApiTokens, Notifiable, HasRoles;
+    use HasFactory, HasApiTokens, Notifiable; //, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -39,22 +39,28 @@ class User extends Authenticatable
     public const STATUS_ACTIVE = 1;
     public const STATUS_INACTIVE = 0;
 
-    public function isAdmin()
+    /**
+     * Check if the user is an admin.
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;
     }
 
     /**
-     * The attributes that should be cast.
+     * Define the relationship between User and Order.
      *
-     * @var array<string, string>
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
     }
 }

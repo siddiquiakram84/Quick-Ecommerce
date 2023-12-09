@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -11,13 +10,27 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all();
-        return response()->json($products, 200);
+        return response()->json([
+            'success' => true,
+            'data' => $products,
+        ], 200);
     }
 
     public function show($id)
     {
-        $product = Product::findOrFail($id);
-        return response()->json($product, 200);
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $product,
+        ], 200);
     }
 
     public function store(Request $request)
@@ -33,12 +46,23 @@ class ProductController extends Controller
 
         $product = Product::create($validatedData);
 
-        return response()->json($product, 201);
+        return response()->json([
+            'success' => true,
+            'data' => $product,
+            'message' => 'Product created successfully',
+        ], 201);
     }
 
     public function update(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found',
+            ], 404);
+        }
 
         $validatedData = $request->validate([
             'category_id' => 'exists:categories,id',
@@ -51,25 +75,29 @@ class ProductController extends Controller
 
         $product->update($validatedData);
 
-        return response()->json($product, 200);
+        return response()->json([
+            'success' => true,
+            'data' => $product,
+            'message' => 'Product updated successfully',
+        ], 200);
     }
 
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
-        $product->delete();
-
-        return response()->json(null, 204);
-    }
-
-    public function viewProduct($id)
-    {
         $product = Product::find($id);
 
         if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found',
+            ], 404);
         }
 
-        return response()->json(['product' => $product]);
+        $product->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product deleted successfully',
+        ], 204);
     }
 }
