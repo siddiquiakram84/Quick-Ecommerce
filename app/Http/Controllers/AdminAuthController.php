@@ -25,7 +25,7 @@ class AdminAuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
-            if ($user->role === UserRoleEnums::ADMIN) {
+            if ($user->role == UserRoleEnums::ADMIN) {
                 $token = $user->createToken('admin_auth_token')->plainTextToken;
 
                 return response()->json([
