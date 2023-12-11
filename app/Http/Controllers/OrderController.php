@@ -3,11 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
@@ -65,53 +61,23 @@ class OrderController extends Controller
         return response()->json(null, 204);
     }
 
-    public function placeOrder(Request $request): JsonResponse
+    public function placeOrder(Request $request)
     {
+        // Assume the request contains product_ids and quantities for the ordered products
+        $productIds = $request->input('product_id');
+        $quantities = $request->input('quantities');
+
         // Validate inputs
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'product_id' => 'required|array',
             'quantities' => 'required|array',
             'product_id.*' => 'exists:products,id',
             'quantities.*' => 'integer|min:1',
         ]);
 
-        // Create a new order with the user_id
-        $order = Order::create([
-            'user_id' => auth()->check() ? auth()->id() : null, // Assuming there is an authenticated user
-            // Add any other order-related fields here
-        ]);
+        // Logic to place an order (you may save this information in the database)
 
-        try {
-            // Start a database transaction
-            DB::beginTransaction();
-
-            // Attach products to the order with quantities
-            for ($i = 0; $i < count($request->product_id); $i++) {
-                $product = Product::find($request->product_id[$i]);
-
-                // Attach the product to the order with the specified quantity
-                $order->products()->attach($product, ['quantity' => $request->quantities[$i]]);
-            }
-
-            // Commit the transaction if everything is successful
-            DB::commit();
-
-            return response()->json(['message' => 'Order placed successfully', 'order_id' => $order->id], 200);
-
-        } catch (\Exception $e) {
-            // Rollback the transaction in case of any error
-            DB::rollback();
-
-            return response()->json([
-                'message' => 'Failed to place order',
-                'error' => [
-                    'code' => $e->getCode(),
-                    'message' => $e->getMessage(),
-                    'trace' => $e->getTrace(),
-                ]
-            ], 500);
-        }
+        return response()->json(['message' => 'Order placed successfully']);
     }
 
     public function viewOrders()
