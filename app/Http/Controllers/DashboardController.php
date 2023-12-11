@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Enums\UserRoleEnums;
 
 class DashboardController extends Controller
 {
@@ -14,7 +15,8 @@ class DashboardController extends Controller
     {
         $products = Product::all();
         $categories = Category::all();
-        $userCount = User::count(); // Example: Count of users
+        $role = UserRoleEnums::USER;
+        $userCount = User::where('role', $role)->count();
 
         // Standardized response format
         $response = [

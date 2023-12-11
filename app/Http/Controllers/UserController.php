@@ -22,6 +22,12 @@ class UserController extends Controller
         return response()->json($users, 200);
     }
 
+    public function adminShow()
+    {   $role = UserRoleEnums::USER;
+        $users = User::where('role', $role)->get();
+        return response()->json($users, 200);
+    }
+
     public function show($id)
     {
         $user = User::findOrFail($id);

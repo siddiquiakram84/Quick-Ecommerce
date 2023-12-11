@@ -37,7 +37,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/register', [AdminAuthController::class, 'register']);
 
     // Admin routes for managing customers/users
-    Route::get('/user', [UserController::class, 'index']);
+    Route::get('/user', [UserController::class, 'adminShow']);
     Route::post('/user', [UserController::class, 'store']);
     Route::put('/user/{id}', [UserController::class, 'update']);
 
@@ -79,8 +79,6 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/product/{id}', [ProductController::class, 'viewProduct']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    // Route::resource('products', 'ProductController');
-    // Route::resource('categories', 'CategoryController');
     Route::resource('orders', 'OrderController');
     Route::resource('user', 'UserController');
 });
