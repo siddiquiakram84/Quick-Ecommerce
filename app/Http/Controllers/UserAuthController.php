@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRoleEnums;
+use App\Enums\UserStatusEnums;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class UserAuthController extends Controller
 {
@@ -20,7 +22,7 @@ class UserAuthController extends Controller
         ]);
 
         // Set default role and status for regular users
-        $request->merge(['role' => User::ROLE_USER, 'status' => User::STATUS_ACTIVE]);
+        $request->merge(['role' => UserRoleEnums::USER, 'status' => UserStatusEnums::ACTIVE]);
 
         // Create user
         $user = User::create([
@@ -61,6 +63,8 @@ class UserAuthController extends Controller
             ]);
         }
 
-        return response()->json(['error' => 'Invalid credentials'], 401);
+        throw ValidationException::withMessages([
+            'email' => ['Invalid credentials.'],
+        ]);
     }
 }

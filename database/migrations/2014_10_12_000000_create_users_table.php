@@ -1,5 +1,6 @@
 <?php
-
+use App\Enums\UserRoleEnums;
+use App\Enums\UserStatusEnums;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,8 +19,8 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('phone')->nullable();
-            $table->tinyInteger('role')->default(0); // 0 for user, 1 for admin
-            $table->tinyInteger('status')->default(0); // 1 for active, 0 for inactive
+            $table->tinyInteger('role')->default(UserRoleEnums::USER);
+            $table->tinyInteger('status')->default(UserStatusEnums::ACTIVE);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -25,7 +25,7 @@ class OrderController extends Controller
             'user_id' => 'required|exists:users,id',
             'total_price' => 'required|numeric',
             'status' => 'required|string|in:Delivered,Pending,Processing',
-            'payment_status' => 'required|string|in:Paid,Pending,Processing',
+            'payment_status' => 'required|integer|in:0, 1', // 0 for pending, 1 for paid.
             'delivery_address' => 'nullable|string',
             'delivery_method' => 'nullable|string',
         ]);
@@ -40,17 +40,17 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
 
         $validatedData = $request->validate([
-            'user_id' => 'exists:users,id',
-            'total_price' => 'numeric',
-            'status' => 'string|in:Delivered,Pending,Processing',
-            'payment_status' => 'string|in:Paid,Pending,Processing',
+            'user_id' => 'required|exists:users,id',
+            'total_price' => 'required|numeric',
+            'status' => 'required|string|in:Delivered,Pending,Processing',
+            'payment_status' => 'required|integer|in:0, 1', // 0 for pending, 1 for paid.
             'delivery_address' => 'nullable|string',
             'delivery_method' => 'nullable|string',
         ]);
 
         $order->update($validatedData);
 
-        return response()->json($order, 200);
+        return response()->json(['message' => 'Order updated successfully', 'order' => $order], 200);
     }
 
     public function destroy($id)
@@ -64,14 +64,14 @@ class OrderController extends Controller
     public function placeOrder(Request $request)
     {
         // Assume the request contains product_ids and quantities for the ordered products
-        $productIds = $request->input('product_ids');
+        $productIds = $request->input('product_id');
         $quantities = $request->input('quantities');
 
         // Validate inputs
         $request->validate([
-            'product_ids' => 'required|array',
+            'product_id' => 'required|array',
             'quantities' => 'required|array',
-            'product_ids.*' => 'exists:products,id',
+            'product_id.*' => 'exists:products,id',
             'quantities.*' => 'integer|min:1',
         ]);
 
@@ -88,7 +88,7 @@ class OrderController extends Controller
         // Fetch orders for the authenticated user
         $orders = Order::where('user_id', $userId)->get();
 
-        return response()->json(['orders' => $orders]);
+        return response()->json(['orders' => $orders], 200);
     }
 
     public function viewOrder($id)
@@ -99,6 +99,7 @@ class OrderController extends Controller
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        return response()->json(['order' => $order]);
+        return response()->json(['order' => $order], 200);
     }
+
 }

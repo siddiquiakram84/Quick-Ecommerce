@@ -16,4 +16,12 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    // Define the many-to-many relationship with Cart
+    public function carts()
+    {
+        return $this->belongsToMany(Cart::class, 'cart_product')
+            ->withPivot('quantity', 'unit_price')
+            ->withTimestamps();
+    }
 }

@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
+use App\Enums\UserRoleEnums;
+use App\Enums\UserStatusEnums;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, HasApiTokens, Notifiable; //, HasRoles;
+    use HasFactory, HasApiTokens, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -32,13 +33,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    // Enum classes for role and status
-    public const ROLE_USER = 0;
-    public const ROLE_ADMIN = 1;
-
-    public const STATUS_ACTIVE = 1;
-    public const STATUS_INACTIVE = 0;
-
     /**
      * Check if the user is an admin.
      *
@@ -46,7 +40,7 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->role === self::ROLE_ADMIN;
+        return $this->role === UserRoleEnums::ADMIN;
     }
 
     /**

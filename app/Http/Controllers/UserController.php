@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRoleEnums;
+use App\Enums\UserStatusEnums;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Cart;
@@ -33,8 +35,8 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
             'phone' => 'nullable|string|max:20',
-            'role' => 'required|integer|size:1', // 0 for user, 1 for admin
-            'status' => 'required|integer|size:1', // 0 for inactive, 1 for active
+            'role' => ['required', Rule::in([UserRoleEnums::USER, UserRoleEnums::ADMIN])],
+            'status' => ['required', Rule::in([UserStatusEnums::ACTIVE, UserStatusEnums::INACTIVE])],
         ]);
 
         $user = User::create($validatedData);
