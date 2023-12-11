@@ -37,11 +37,9 @@ Route::prefix('admin')->group(function () {
     Route::post('/register', [AdminAuthController::class, 'register']);
 
     // Admin routes for managing customers/users
-    Route::get('/user', [UserController::class, 'adminShow']);
+    Route::get('/user', [UserController::class, 'userShow']);
     Route::post('/user', [UserController::class, 'store']);
     Route::put('/user/{id}', [UserController::class, 'update']);
-
-    // Delete a user
     Route::delete('/user/{id}', [UserController::class, 'destroy']);
 
     // Admin routes for managing products
