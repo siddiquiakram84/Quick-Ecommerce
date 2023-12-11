@@ -71,7 +71,6 @@ Route::prefix('user')->group(function () {
 
 });
 
-
 // Home page features
 Route::post('/cart/add', [CartController::class, 'addToCart']);
 Route::get('/categories', [CategoryController::class, 'index']);

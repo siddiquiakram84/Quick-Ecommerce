@@ -9,7 +9,7 @@ class Cart extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id', 'order_id', 'status', 'total_price',
+        'user_id', 'product_id', 'order_id', 'status', 'total_price',
     ];
 
     // Define the many-to-many relationship with Product

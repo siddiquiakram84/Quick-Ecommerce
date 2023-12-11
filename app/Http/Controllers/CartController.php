@@ -44,7 +44,8 @@ class CartController extends Controller
             ['user_id' =>  $validatedData['user_id'] ?? null, 'status' => self::CART_STATUS_ACTIVE],
             [
                 'order_id' => $validatedData['order_id'] ?? null,
-                'total_price' => DB::raw("total_price + {$totalPrice}")
+                'total_price' => DB::raw("total_price + {$totalPrice}"),
+                'product_id' => $validatedData['product_id']
             ]
         );
 
