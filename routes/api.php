@@ -54,6 +54,9 @@ Route::prefix('admin')->group(function () {
     // Admin Dashboard route
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
+    // Admin Dashboard route
+    Route::post('/products/upload-image/{id}', [ProductController::class, 'uploadImage']);
+
 });
 
 Route::prefix('user')->group(function () {
