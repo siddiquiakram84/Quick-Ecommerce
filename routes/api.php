@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\UserAuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use App\Http\Controllers\UserController;
@@ -12,8 +11,6 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\DashboardController;
-use App\Models\Product;
-use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,9 +51,6 @@ Route::prefix('admin')->group(function () {
     // Admin Dashboard route
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
-    // Admin Dashboard route
-    // Route::post('/products/upload-image/{id}', [ProductController::class, 'uploadImage']);
-
     // Order history
     Route::get('/history', [OrderProductController::class, 'index']);
 
@@ -66,7 +60,7 @@ Route::prefix('user')->group(function () {
     Route::post('/login', [UserAuthController::class, 'login']);
     Route::post('/register', [UserAuthController::class, 'register']);
     Route::post('/order/place', [OrderController::class, 'placeOrder']);
-    // Route::get('/orders', [OrderController::class, 'viewOrders']);
+    Route::get('/orders', [OrderController::class, 'viewOrders']);
     Route::get('/orders/{id}', [OrderController::class, 'viewOrder']);
     Route::post('/cart/add', [CartController::class, 'addToCart']);
     Route::get('/categories', [CategoryController::class, 'index']);

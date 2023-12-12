@@ -84,24 +84,37 @@ class OrderController extends Controller
 
         try {
             // Start a database transaction
-            DB::beginTransaction();
+            // Start a database transaction
+        DB::beginTransaction();
 
-            // Attach products to the order with quantities
-            for ($i = 0; $i < count($request->product_id); $i++) {
-                $product = Product::find($request->product_id[$i]);
+        $totalPrice = 0; // Initialize total price
 
-                // Attach the product to the order with the specified quantity
-                $order->products()->attach($product, ['quantity' => $request->quantities[$i]]);
-            }
+        // Attach products to the order with quantities
+        for ($i = 0; $i < count($request->product_id); $i++) {
+            $product = Product::find($request->product_id[$i]);
 
-            // Commit the transaction if everything is successful
-            DB::commit();
+            // Attach the product to the order with the specified quantity
+            $order->products()->attach($product, ['quantity' => $request->quantities[$i]]);
 
-            return response()->json(['success' => true, 'message' => 'Order placed successfully',
-            'data' => $validatedData], 200);  /*, 'user_id' => $request['user_id'], 
-            'order_id' => $order->id*/
+            // Calculate the total price for each product and quantity
+            $totalPrice += $product->price * $request->quantities[$i];
+        }
 
-        } catch (\Exception $e) {
+        // Update the total_price attribute of the order
+        $order->update(['total_price' => $totalPrice]);
+
+        // Commit the transaction if everything is successful
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order placed successfully',
+            'data' => $validatedData,
+            'total_price' => $totalPrice,
+            'order_id' => $order->id,
+        ], 200);
+    }
+         catch (\Exception $e) {
             // Rollback the transaction in case of any error
             DB::rollback();
 

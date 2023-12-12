@@ -34,29 +34,6 @@ class ProductController extends Controller
         ], 200);
     }
 
-    // public function uploadImage(Request $request, $id)
-    // { 
-    //     $product = Product::find($id);
-
-    //     if (!$product) {
-    //         return response()->json(['error' => 'Product not found'], 404);
-    //     }
-
-    //     $request->validate([
-    //         'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust file types and size as needed
-    //     ]);
-
-    //     if ($request->hasFile('image')) {
-    //         $imagePath = $request->file('image')->store('product_images', 'public');
-    //         $product->image = $imagePath;
-    //         $product->save();
-
-    //         return response()->json([ 'message' => 'Image uploaded successfully'], 200);
-    //     }
-
-    //     return response()->json(['error' => 'No image provided'], 400);
-    // }
-
     public function store(Request $request)
     {
         $validatedData = $request->validate([
