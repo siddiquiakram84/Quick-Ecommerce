@@ -30,4 +30,11 @@ class Product extends Model
         return $this->belongsToMany(Order::class)->withPivot('quantity');
     }
 
+    // Accessor for the 'image' attribute
+    public function getImageAttribute($value)
+    {
+        return asset('storage/' . $value);
+    }
+
+
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -26,12 +27,35 @@ class ProductController extends Controller
                 'message' => 'Product not found',
             ], 404);
         }
-
+        
         return response()->json([
             'success' => true,
             'data' => $product,
         ], 200);
     }
+
+    // public function uploadImage(Request $request, $id)
+    // { 
+    //     $product = Product::find($id);
+
+    //     if (!$product) {
+    //         return response()->json(['error' => 'Product not found'], 404);
+    //     }
+
+    //     $request->validate([
+    //         'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust file types and size as needed
+    //     ]);
+
+    //     if ($request->hasFile('image')) {
+    //         $imagePath = $request->file('image')->store('product_images', 'public');
+    //         $product->image = $imagePath;
+    //         $product->save();
+
+    //         return response()->json([ 'message' => 'Image uploaded successfully'], 200);
+    //     }
+
+    //     return response()->json(['error' => 'No image provided'], 400);
+    // }
 
     public function store(Request $request)
     {
@@ -41,9 +65,19 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric',
             'quantity_in_stock' => 'required|integer',
-            'image' => 'nullable|string',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // Check if an image file is provided
+        if ($request->hasFile('image')) {
+            // Upload the image
+            $imagePath = $request->file('image')->store('product_images', 'public');
+
+            // Add the image path to the validated data
+            $validatedData['image'] = $imagePath;
+        }
+
+        // Create the product
         $product = Product::create($validatedData);
 
         return response()->json([
@@ -101,27 +135,5 @@ class ProductController extends Controller
         ], 204);
     }
 
-    public function uploadImage(Request $request, $id)
-    { 
-        $product = Product::find($id);
-
-        if (!$product) {
-            return response()->json(['error' => 'Product not found'], 404);
-        }
-
-        $request->validate([
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust file types and size as needed
-        ]);
-
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('product_images', 'public');
-            $product->image = $imagePath;
-            $product->save();
-
-            return response()->json([ 'message' => 'Image uploaded successfully'], 200);
-        }
-
-        return response()->json(['error' => 'No image provided'], 400);
-    }
 
 }
