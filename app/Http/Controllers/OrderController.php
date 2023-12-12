@@ -68,7 +68,7 @@ class OrderController extends Controller
     public function placeOrder(Request $request): JsonResponse
     {
         // Validate inputs
-        $request->validate([
+        $validatedData = $request->validate([
             'user_id' => 'required|exists:users,id',
             'product_id' => 'required|array',
             'quantities' => 'required|array',
@@ -78,7 +78,7 @@ class OrderController extends Controller
 
         // Create a new order with the user_id
         $order = Order::create([
-            'user_id' => auth()->check() ? auth()->id() : null, // Assuming there is an authenticated user
+            'user_id' => $validatedData['user_id'],
             // Add any other order-related fields here
         ]);
 
@@ -97,7 +97,9 @@ class OrderController extends Controller
             // Commit the transaction if everything is successful
             DB::commit();
 
-            return response()->json(['message' => 'Order placed successfully', 'order_id' => $order->id], 200);
+            return response()->json(['success' => true, 'message' => 'Order placed successfully',
+            'data' => $validatedData], 200);  /*, 'user_id' => $request['user_id'], 
+            'order_id' => $order->id*/
 
         } catch (\Exception $e) {
             // Rollback the transaction in case of any error

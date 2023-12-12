@@ -118,7 +118,7 @@ class ProductController extends Controller
             $product->image = $imagePath;
             $product->save();
 
-            return response()->json(['message' => 'Image uploaded successfully']);
+            return response()->json([ 'message' => 'Image uploaded successfully'], 200);
         }
 
         return response()->json(['error' => 'No image provided'], 400);

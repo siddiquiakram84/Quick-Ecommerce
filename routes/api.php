@@ -57,13 +57,16 @@ Route::prefix('admin')->group(function () {
     // Admin Dashboard route
     Route::post('/products/upload-image/{id}', [ProductController::class, 'uploadImage']);
 
+    // Order history
+    Route::get('/history', [OrderProductController::class, 'index']);
+
 });
 
 Route::prefix('user')->group(function () {
     Route::post('/login', [UserAuthController::class, 'login']);
     Route::post('/register', [UserAuthController::class, 'register']);
     Route::post('/order/place', [OrderController::class, 'placeOrder']);
-    Route::get('/orders', [OrderController::class, 'viewOrders']);
+    // Route::get('/orders', [OrderController::class, 'viewOrders']);
     Route::get('/orders/{id}', [OrderController::class, 'viewOrder']);
     Route::post('/cart/add', [CartController::class, 'addToCart']);
     Route::get('/categories', [CategoryController::class, 'index']);
@@ -77,6 +80,9 @@ Route::post('/cart/add', [CartController::class, 'addToCart']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/product/{id}', [ProductController::class, 'viewProduct']);
+
+// In your routes file
+Route::middleware('auth:sanctum')->get('/view-orders', [OrderController::class, 'viewOrders']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::resource('orders', 'OrderController');
