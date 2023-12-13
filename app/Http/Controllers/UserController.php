@@ -22,6 +22,12 @@ class UserController extends Controller
         return response()->json($users, 200);
     }
 
+    public function adminShow()
+    {
+        $users = User::where('role', UserRoleEnums::ADMIN)->get();
+        return response()->json($users, 200);
+    }
+
     public function userShow()
     {   $role = UserRoleEnums::USER;
         $users = User::where('role', $role)->get();

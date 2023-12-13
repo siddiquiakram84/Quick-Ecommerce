@@ -32,6 +32,7 @@ use App\Http\Controllers\DashboardController;
 Route::prefix('admin')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login']);
     Route::post('/register', [AdminAuthController::class, 'register']);
+    Route::get('/', [UserController::class, 'adminShow']);
 
     // Admin routes for managing customers/users
     Route::get('/user', [UserController::class, 'userShow']);
