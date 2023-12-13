@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\CartStatusEnums;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +14,7 @@ class CreateCartsTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('order_id')->nullable();
-            $table->integer('status');
+            $table->tinyInteger('status')->default(CartStatusEnums::PENDING);
             $table->decimal('total_price', 8, 2)->default(0.00);
             $table->timestamps();
 
