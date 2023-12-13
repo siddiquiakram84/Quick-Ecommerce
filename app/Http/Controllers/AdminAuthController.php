@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Enums\UserRoleEnums;
 use App\Enums\UserStatusEnums;
-// use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Laravel\Sanctum\HasApiTokens;
@@ -43,34 +42,4 @@ class AdminAuthController extends Controller
         ], 401);
     }
 
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'phone' => 'nullable|string|max:20',
-        ]);
-
-        // Set default role and status for admin users
-        $request->merge(['role' => UserRoleEnums::ADMIN, 'status' => UserStatusEnums::ACTIVE]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'phone' => $request->phone,
-            'role' => $request->role,
-            'status' => $request->status,
-        ]);
-
-        $token = $user->createToken('admin_auth_token')->plainTextToken;
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Admin registered successfully',
-            'token' => $token,
-            'user' => $user,
-        ]);
-    }
 }
