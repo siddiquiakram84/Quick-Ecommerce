@@ -57,7 +57,7 @@ class UserAuthController extends Controller
             $user = Auth::user();
 
             // Check if the user status is active
-            if ($user->status === UserStatusEnums::ACTIVE) {
+            if ($user->status === UserStatusEnums::ACTIVE) { 
                 // User is active, generate an authentication token
                 $token = $user->createToken('user_auth_token')->plainTextToken;
 

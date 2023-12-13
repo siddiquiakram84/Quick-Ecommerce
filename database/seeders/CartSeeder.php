@@ -9,8 +9,7 @@ class CartSeeder extends Seeder
 {
     public function run()
     {
-        Cart::factory(5)->create([
-            // Add other fillable attributes here
-        ]);
+        // Create fake carts
+        Cart::factory(50)->create();
     }
 }

@@ -15,6 +15,8 @@ class CartFactory extends Factory
             'user_id' => function () {
                 return \App\Models\User::factory()->create()->id;
             },
+            'product_id' => $this->faker->randomElement(\App\Models\Product::pluck('id')),
+
             'status' => $this->faker->randomElement([1, 2]), // Adjust as needed
             'total_price' => $this->faker->randomFloat(2, 10, 50),
             // Add other attributes here
