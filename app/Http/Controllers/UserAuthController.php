@@ -46,25 +46,44 @@ class UserAuthController extends Controller
 
     public function login(Request $request)
     {
+        // Validate the incoming login credentials
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
+        // Attempt to authenticate the user
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            $token = $user->createToken('user_auth_token')->plainTextToken;
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Login successful',
-                'token' => $token,
-                'user' => $user,
-            ]);
+            // Check if the user status is active
+            if ($user->status === UserStatusEnums::ACTIVE) {
+                // User is active, generate an authentication token
+                $token = $user->createToken('user_auth_token')->plainTextToken;
+
+                // Return a JSON response with success details, token, and user information
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login successful',
+                    'token' => $token,
+                    'user' => $user,
+                ]);
+            } 
+            else {
+                // User is inactive, log them out and return an error response
+                Auth::logout();
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User is inactive. Login not allowed.',
+                ], 401); // 401 Unauthorized status code
+            }
         }
 
+        // If authentication fails, throw a validation exception
         throw ValidationException::withMessages([
             'email' => ['Invalid credentials.'],
         ]);
     }
+
 }

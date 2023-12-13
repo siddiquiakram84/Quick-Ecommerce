@@ -84,7 +84,6 @@ class OrderController extends Controller
 
         try {
             // Start a database transaction
-            // Start a database transaction
         DB::beginTransaction();
 
         $totalPrice = 0; // Initialize total price
