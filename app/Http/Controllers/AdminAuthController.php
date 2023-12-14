@@ -87,6 +87,8 @@ class AdminAuthController extends Controller
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
             'role' => UserRoleEnums::ADMIN,
+            'phone' => $request->input('phone'),
+            'status' => $request->input('status'),
             // Add other fields as needed
         ]);
 
