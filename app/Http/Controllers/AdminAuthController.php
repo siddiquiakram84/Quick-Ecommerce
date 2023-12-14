@@ -89,7 +89,6 @@ class AdminAuthController extends Controller
             'role' => UserRoleEnums::ADMIN,
             'phone' => $request->input('phone'),
             'status' => $request->input('status'),
-            // Add other fields as needed
         ]);
 
         return response()->json([

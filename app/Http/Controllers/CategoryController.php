@@ -28,7 +28,17 @@ class CategoryController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Check if an image file is provided
+        if ($request->hasFile('image')) {
+            // Upload the image
+            $imagePath = $request->file('image')->store('category_images', 'public');
+
+            // Add the image path to the validated data
+            $validatedData['image'] = $imagePath;
+        }
 
         $category = Category::create($validatedData);
 
@@ -44,7 +54,17 @@ class CategoryController extends Controller
         $validatedData = $request->validate([
             'name' => 'string|max:255',
             'description' => 'nullable|string',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Check if an image file is provided
+        if ($request->hasFile('image')) {
+            // Upload the image
+            $imagePath = $request->file('image')->store('category_images', 'public');
+
+            // Add the image path to the validated data
+            $validatedData['image'] = $imagePath;
+        }
 
         $category->update($validatedData);
 
