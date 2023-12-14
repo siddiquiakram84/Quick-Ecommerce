@@ -32,7 +32,7 @@ use App\Http\Controllers\DashboardController;
 Route::prefix('admin')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login']);
     Route::post('/register', [AdminAuthController::class, 'register']);
-    Route::get('/', [UserController::class, 'adminShow']);
+    Route::get('/logout', [AdminAuthController::class, 'logout']);
 
     // Admin routes for managing customers/users
     Route::get('/user', [UserController::class, 'userShow']);
@@ -80,6 +80,8 @@ Route::get('/product/{id}', [ProductController::class, 'viewProduct']);
 Route::middleware('auth:sanctum')->get('/view-orders', [OrderController::class, 'viewOrders']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
+    Route::get('admin/me', [AdminAuthController::class, 'adminMe']);
     Route::resource('orders', 'OrderController');
     Route::resource('user', 'UserController');
 });
