@@ -26,7 +26,7 @@ class UserFactory extends Factory
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
-            'password' => bcrypt('password'), // You may want to use Hash::make() instead
+            'password' => bcrypt('password'),
             'phone' => $this->faker->phoneNumber,
             'role' => 0, // Regular user by default
             'status' => 1, // Active by default
