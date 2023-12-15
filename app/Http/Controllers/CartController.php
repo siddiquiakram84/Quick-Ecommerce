@@ -25,14 +25,6 @@ class CartController extends Controller
         // Find the product
         $product = Product::findOrFail($validatedData['product_id']);
 
-        // Check if the product exists
-        if (!$product) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Product not found',
-            ], 404);
-        }
-
         // Get the authenticated user or null if not authenticated
         $user = auth()->user();
         
@@ -70,6 +62,5 @@ class CartController extends Controller
             ],
         ], 201);
     }
-
 
 }
