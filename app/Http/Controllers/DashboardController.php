@@ -13,14 +13,10 @@ class DashboardController extends Controller
 
     public function index()
     {
-        // $products = Product::all();
-        // $categories = Category::all();
-        $products = Product::latest()->get();
-        $categories = Category::latest()->get();
-        // $userCount = User::where('role', $role)->count();
         $role = UserRoleEnums::USER;
+        $products = Product::latest()->count();
+        $categories = Category::latest()->count();
         $userCount = User::where('role', $role)->count();
-        dd($userCount);
 
         // Standardized response format
         $response = [
