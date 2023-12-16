@@ -40,6 +40,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/user', [UserController::class, 'store']);
     Route::put('/user/{id}', [UserController::class, 'update']);
     Route::delete('/user/{id}', [UserController::class, 'destroy']);
+    Route::get('/category/{id}', [CategoryController::class, 'show']);
 
     // Admin routes for managing products
     Route::resource('products', ProductController::class);
@@ -68,6 +69,7 @@ Route::prefix('user')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/product/{id}', [ProductController::class, 'show']);
+    Route::get('/category/{id}', [CategoryController::class, 'show']);
 
 });
 
