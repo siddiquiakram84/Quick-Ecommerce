@@ -119,10 +119,15 @@ class ProductController extends Controller
 
         // Check if the query is not empty after trimming
         if ($query !== '') {
-            // Perform a search query on your products table
-            $results = Product::where('name', 'like', "%$query%")
+            $results = Product::where(function ($queryBuilder) use ($query) {
+            $queryBuilder->where('name', 'like', "%$query%")
                 ->orWhere('description', 'like', "%$query%")
-                ->get();
+                ->orWhereHas('category', function ($categoryQuery) use ($query) {
+                    $categoryQuery->where('name', 'like', "%$query%")
+                        ->orWhere('description', 'like', "%$query%");
+                });
+            })
+            ->get();
 
             // Check if any results are found
             if ($results->isEmpty()) {
