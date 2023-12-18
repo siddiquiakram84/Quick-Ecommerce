@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-namespace App\Http\Controllers;
-
 use App\Models\Cart;
 use App\Models\Product;
 use App\Enums\CartStatusEnums;
+use App\Events\CartUpdated;
+use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
@@ -26,7 +25,7 @@ class CartController extends Controller
         $product = Product::findOrFail($validatedData['product_id']);
 
         // Get the authenticated user or null if not authenticated
-        $user = auth()->user();
+        $user = Auth::user();
 
         // Calculate the total price
         $totalPrice = $product->price * $validatedData['quantity'];
@@ -34,7 +33,8 @@ class CartController extends Controller
         // Use the user's active cart or create a new one
         $cart = Cart::updateOrCreate(
             ['user_id' => $validatedData['user_id'] ?? $user->id ?? null, 'status' => CartStatusEnums::PROCESSING],
-            [ 'product_id' => $validatedData['product_id'],
+            [
+                'product_id' => $validatedData['product_id'],
                 'order_id' => $validatedData['order_id'] ?? null,
                 'total_price' => $totalPrice,
             ]
@@ -50,47 +50,63 @@ class CartController extends Controller
 
         // Reload the cart to get the updated total_price value
         $cart->refresh();
-        
-        $resp['data'] = $cart;
-        $resp['product_details'] = $product;
 
-        return response()->json([
+        $responseData = [
             'status' => 'success',
             'message' => 'Product added to cart successfully',
-            $resp], 201);
+            'data' => [
+                'cart' => $cart,
+                'product_details' => $product,
+            ],
+        ];
+
+        return response()->json($responseData, 201);
     }
 
-    public function viewCart()
+    public function viewSingleCart($cartId)
     {
         // Get the authenticated user or null if not authenticated
-        $user = auth()->user();
+        $user = Auth::user();
 
-        // Retrieve the active cart for the user with associated products
-        $cart = Cart::where('user_id', $user->id ?? null)
-            ->where('status', CartStatusEnums::PROCESSING)
-            ->orderByDesc('created_at')
-            ->with('products') // Eager load products relationship
-            ->first();
+        // Retrieve the single cart by its ID for the user with associated products
+        $cart = Cart::where('id', $cartId)->first();
+        $cart['product'] = Order::find($cart['product_id']);
 
         if (!$cart) {
             return response()->json([
-                'status' => 'success',
-                'message' => 'Cart is empty',
-                'data' => [
-                    'cart' => null,
-                ],
-            ]);
+                'status' => 'error',
+                'message' => 'Cart not found or does not belong to the authenticated user',
+            ], 404);
         }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Cart details retrieved successfully',
+            'message' => 'Single cart details retrieved successfully',
             'data' => [
                 'cart' => $cart,
             ],
         ]);
     }
 
+    public function deleteSingleCart($cartId)
+    {
+        // Get the authenticated user or null if not authenticated
+        $user = Auth::user();
 
+        // Delete the single cart by its ID for the user
+        $deletedCart = Cart::where('id', $cartId)->delete();
+
+        if ($deletedCart) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Single cart deleted successfully',
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Cart not found or does not belong to the authenticated user',
+        ], 404);
+    }
 
 }
