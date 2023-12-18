@@ -6,13 +6,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Product;
+use App\Enums\CartStatusEnums;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    const CART_STATUS_ACTIVE = 1;
+    // const CART_STATUS_ACTIVE = 1;
 
     public function addToCart(Request $request)
     {
@@ -34,7 +35,7 @@ class CartController extends Controller
 
         // Use the user's active cart or create a new one
         $cart = Cart::updateOrCreate(
-            ['user_id' => $validatedData['user_id'] ?? $user->id ?? null, 'status' => self::CART_STATUS_ACTIVE],
+            ['user_id' => $validatedData['user_id'] ?? $user->id ?? null, 'status' => CartStatusEnums::PROCESSING],
             [ 'product_id' => $validatedData['product_id'],
                 'order_id' => $validatedData['order_id'] ?? null,
             ]
@@ -66,7 +67,9 @@ class CartController extends Controller
         $user = Auth::user();
 
         // Retrieve the active cart for the user
-        $cart = Cart::get()->last();
+        $cart = Cart::where('user_id', $user->id ?? null)
+            ->orderByDesc('created_at') // Assuming you want the latest cart
+            ->firstorFail();
 
         if (!$cart) {
             return response()->json([
@@ -86,5 +89,4 @@ class CartController extends Controller
             ],
         ]);
     }
-
 }
