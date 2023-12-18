@@ -114,15 +114,33 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->input('query');
+        // Trim whitespace from the beginning and end
+        $query = trim($request->input('query'));
 
-        // Perform a search query on your products table
-        $results = Product::where('name', 'like', "%$query%")
-            ->orWhere('description', 'like', "%$query%")->get();
+        // Check if the query is not empty after trimming
+        if ($query !== '') {
+            // Perform a search query on your products table
+            $results = Product::where('name', 'like', "%$query%")
+                ->orWhere('description', 'like', "%$query%")
+                ->get();
+
+            // Check if any results are found
+            if ($results->isEmpty()) {
+                // No products found
+                $resp['message'] = 'No products found.';
+                $resp['data'] = [];
+            } else {
+                // Products found
+                $resp['message'] = 'Products found.';
+                $resp['data'] = $results;
+            }
+        } else {
+            // Empty query
+            $resp['message'] = 'Empty query.';
+            $resp['data'] = [];
+        }
 
         // Return the results as JSON
-        $resp['message'] = true;
-        $resp['data'] = $results;
         return response()->json($resp);
     }
 
