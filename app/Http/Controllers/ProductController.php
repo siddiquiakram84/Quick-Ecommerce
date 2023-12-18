@@ -112,5 +112,18 @@ class ProductController extends Controller
         ], 204);
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Perform a search query on your products table
+        $results = Product::where('name', 'like', "%$query%")
+            ->orWhere('description', 'like', "%$query%")->get();
+
+        // Return the results as JSON
+        $resp['message'] = true;
+        $resp['data'] = $results;
+        return response()->json($resp);
+    }
 
 }

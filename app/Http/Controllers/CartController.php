@@ -8,6 +8,7 @@ use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -34,7 +35,7 @@ class CartController extends Controller
         // Use the user's active cart or create a new one
         $cart = Cart::updateOrCreate(
             ['user_id' => $validatedData['user_id'] ?? $user->id ?? null, 'status' => self::CART_STATUS_ACTIVE],
-            [
+            [ 'product_id' => $validatedData['product_id'],
                 'order_id' => $validatedData['order_id'] ?? null,
             ]
         );
@@ -58,4 +59,32 @@ class CartController extends Controller
             ],
         ], 201);
     }
+
+    public function viewCart()
+    {
+        // Get the authenticated user or null if not authenticated
+        $user = Auth::user();
+
+        // Retrieve the active cart for the user
+        $cart = Cart::get()->last();
+
+        if (!$cart) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Cart is empty',
+                'data' => [
+                    'cart' => null,
+                ],
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cart details retrieved successfully',
+            'data' => [
+                'cart' => $cart,
+            ],
+        ]);
+    }
+
 }
