@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    // const CART_STATUS_ACTIVE = 1;
-
     public function addToCart(Request $request)
     {
         $validatedData = $request->validate([
@@ -65,12 +63,14 @@ class CartController extends Controller
     public function viewCart()
     {
         // Get the authenticated user or null if not authenticated
-        $user = Auth::user();
+        $user = auth()->user();
 
-        // Retrieve the active cart for the user
+        // Retrieve the active cart for the user with associated products
         $cart = Cart::where('user_id', $user->id ?? null)
-            ->orderByDesc('created_at') // Assuming you want the latest cart
-            ->firstorFail();
+            ->where('status', CartStatusEnums::PROCESSING)
+            ->orderByDesc('created_at')
+            ->with('products') // Eager load products relationship
+            ->first();
 
         if (!$cart) {
             return response()->json([
@@ -90,4 +90,7 @@ class CartController extends Controller
             ],
         ]);
     }
+
+
+
 }
