@@ -38,6 +38,7 @@ class CartController extends Controller
             ['user_id' => $validatedData['user_id'] ?? $user->id ?? null, 'status' => CartStatusEnums::PROCESSING],
             [ 'product_id' => $validatedData['product_id'],
                 'order_id' => $validatedData['order_id'] ?? null,
+                'total_price' => $totalPrice,
             ]
         );
 
@@ -51,14 +52,14 @@ class CartController extends Controller
 
         // Reload the cart to get the updated total_price value
         $cart->refresh();
+        
+        $resp['data'] = $cart;
+        $resp['product_details'] = $product;
 
         return response()->json([
             'status' => 'success',
             'message' => 'Product added to cart successfully',
-            'data' => [
-                'cart' => $cart,
-            ],
-        ], 201);
+            $resp], 201);
     }
 
     public function viewCart()

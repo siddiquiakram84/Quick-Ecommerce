@@ -23,20 +23,20 @@ class Cart extends Model
             ->withTimestamps();
     }
 
-    protected static function boot()
-    {
-        parent::boot();
+    // protected static function boot()
+    // {
+    //     parent::boot();
 
-        // Event listener to update total_price before saving
-        static::saving(function ($cart) {
-            $cart->total_price = $cart->calculateTotalPrice();
-        });
-    }
+    //     // Event listener to update total_price before saving
+    //     static::saving(function ($cart) {
+    //         $cart->total_price = $cart->calculateTotalPrice();
+    //     });
+    // }
 
-    public function calculateTotalPrice()
-    {
-        return $this->products->sum(function ($product) {
-            return $product->pivot->quantity * $product->pivot->unit_price;
-        });
-    }
+    // public function calculateTotalPrice()
+    // {
+    //     return $this->products->sum(function ($product) {
+    //         return $product->pivot->quantity * $product->pivot->unit_price;
+    //     });
+    // }
 }
