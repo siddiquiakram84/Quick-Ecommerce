@@ -72,10 +72,11 @@ Route::post('/user/login', [UserAuthController::class, 'login']);
 Route::post('/user/register', [UserAuthController::class, 'register']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/user/place-order', [OrderController::class, 'placeOrder']);
+    Route::get('/user/orders', [OrderController::class, 'show']);
 });
+
 Route::prefix('user')->group(function () {
     
-    Route::get('/orders', [OrderController::class, 'show']);
     Route::get('/orders/{id}', [OrderController::class, 'index']);
     Route::post('/cart/add', [CartController::class, 'addToCart']);
     Route::get('/categories', [CategoryController::class, 'index']);

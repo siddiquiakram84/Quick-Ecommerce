@@ -19,7 +19,6 @@ class OrderController extends Controller
         $orders = Order::where('id', $request->id)->get();
         $resp['status'] = true;
         $resp['data'] = $orders;
-        // $resp['product_details'] = Product::find('')
         return response()->json($resp, 200);
     }
 
@@ -27,9 +26,8 @@ class OrderController extends Controller
     {
         // Get the authenticated user
         $user = Auth::user();
-
         // Get the cart items for the user with product details
-        $order = Order::where('user_id', $user->id)->with('products')->get();
+        $order = Order::where('user_id', $user->id)->get();
         
         return response()->json($order, 200);
     }
