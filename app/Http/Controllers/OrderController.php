@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Cart;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +17,10 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $orders = Order::where('id', $request->id)->get();
-        return response()->json($orders, 200);
+        $resp['status'] = true;
+        $resp['data'] = $orders;
+        // $resp['product_details'] = Product::find('')
+        return response()->json($resp, 200);
     }
 
     public function show()
@@ -76,7 +80,6 @@ class OrderController extends Controller
     {
         // Get the authenticated user
         $user = Auth::user();
-    
         // Get the cart items for the user with product details
         $cartItems = Cart::where('user_id', $user->id)->with('products')->get();
     
