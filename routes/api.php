@@ -33,9 +33,8 @@ Route::get('/products/search', [ProductController::class, 'search']);
 Route::post('/cart/add', [CartController::class, 'addToCart']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/products', [ProductController::class, 'index']);
-Route::get('/product/{id}', [ProductController::class, 'viewProduct']);
+Route::get('/product/{id}', [ProductController::class, 'show']);
 Route::get('/category/{id}', [CategoryController::class, 'show']);
-// View cart and delete cart
 Route::get('/cart/{cartId}', [CartController::class, 'viewSingleCart']);
 Route::delete('/cart/{cartId}', [CartController::class, 'deleteSingleCart']);
 
