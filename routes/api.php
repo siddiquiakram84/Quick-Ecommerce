@@ -68,10 +68,9 @@ Route::prefix('admin')->group(function () {
     Route::get('/history', [OrderProductController::class, 'index']);
 
 });
-
+Route::post('/user/login', [UserAuthController::class, 'login']);
+Route::post('/user/register', [UserAuthController::class, 'register']);
 Route::prefix('user')->middleware('auth:sanctum')->group(function () {
-    Route::post('/login', [UserAuthController::class, 'login']);
-    Route::post('/register', [UserAuthController::class, 'register']);
     Route::post('/place-order', [OrderController::class, 'placeOrder']);
     Route::get('/orders', [OrderController::class, 'show']);
     Route::post('/cart/add', [CartController::class, 'addToCart']);

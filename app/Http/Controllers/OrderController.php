@@ -72,74 +72,79 @@ class OrderController extends Controller
     }
 
     public function placeOrder(Request $request)
-{
-    // Get the authenticated user
-    $user = Auth::user();
-
-    // Get the cart items for the user with product details
-    $cartItems = Cart::where('user_id', $user->id)->with('products')->get();
-
-    // Calculate the total price based on the prices of items in the cart
-    $totalPrice = $cartItems->sum(function ($cartItem) {
-        return $cartItem->pivot->quantity * $cartItem->pivot->unit_price;
-    });
-
-    // Use constants for order status and payment status
-    $orderStatusPending = 'Pending';
-    $paymentStatusUnpaid = 0;
-
-    // Create a new order
-    $order = Order::create([
-        'user_id' => $user->id,
-        'total_price' => $totalPrice,
-        'status' => $orderStatusPending,
-        'payment_status' => $paymentStatusUnpaid,
-        'delivery_address' => $request->input('delivery_address'),
-        'delivery_method' => $request->input('delivery_method'),
-    ]);
-
-    // Initialize an array to store detailed product information
-    $productsDetails = [];
-
-    // Attach products to the order with pivot data
-    foreach ($cartItems as $cartItem) {
-        $order->products()->attach($cartItem->product_id, [
-            'quantity' => $cartItem->pivot->quantity,
-            'unit_price' => $cartItem->pivot->unit_price,
+    {
+        // Get the authenticated user
+        $user = Auth::user();
+    
+        // Get the cart items for the user with product details
+        $cartItems = Cart::where('user_id', $user->id)->with('products')->get();
+    
+        // Calculate the total price based on the prices of items in the cart
+        $totalPrice = $cartItems->sum(function ($cartItem) {
+            return $cartItem->total_price;
+        });
+    
+        // Use constants for order status and payment status
+        $orderStatusPending = 'Pending';
+        $paymentStatusUnpaid = 0;
+    
+        // Create a new order
+        $order = Order::create([
+            'user_id' => $user->id,
+            'total_price' => $totalPrice,
+            'status' => $orderStatusPending,
+            'payment_status' => $paymentStatusUnpaid,
+            'delivery_address' => $request->input('delivery_address'),
+            'delivery_method' => $request->input('delivery_method'),
         ]);
+    
+        // Initialize an array to store detailed product information
+        $productsDetails = [];
+    
+        // Attach products to the order with pivot data
+        // Attach products to the order with pivot data
+        foreach ($cartItems as $cartItem) {
+            // Check if the product relationship is not null
+            if ($cartItem->product) {
+                // Attach the product to the order
+                $order->products()->attach($cartItem->product_id, [
+                    'quantity' => $cartItem->pivot->quantity,
+                    'unit_price' => $cartItem->pivot->unit_price,
+                ]);
 
-        // Store detailed product information
-        $productDetails = [
-            'product_id' => $cartItem->product->id,
-            'name' => $cartItem->product->name,
-            'description' => $cartItem->product->description,
-            'price' => $cartItem->product->price,
-            'quantity' => $cartItem->pivot->quantity,
-            'unit_price' => $cartItem->pivot->unit_price,
-        ];
+                // Store detailed product information
+                $productDetails = [
+                    'product_id' => $cartItem->product->id,
+                    'name' => $cartItem->product->name,
+                    'description' => $cartItem->product->description,
+                    'price' => $cartItem->product->price,
+                    'quantity' => $cartItem->pivot->quantity,
+                    'unit_price' => $cartItem->pivot->unit_price,
+                ];
 
-        $productsDetails[] = $productDetails;
+                $productsDetails[] = $productDetails;
+            } 
 
-        // Removing the item from the cart after placing the order
-        $cartItem->delete();
+                // Removing the item from the cart after placing the order
+                $cartItem->delete();
+            }
+
+            // Prepare the response data 
+            $responseData = [
+                'order_id' => $order->id,
+                'total_price' => $order->total_price,
+                'status' => $order->status,
+                'payment_status' => $order->payment_status,
+                'delivery_address' => $order->delivery_address,
+                'delivery_method' => $order->delivery_method,
+                'created_at' => $order->created_at->toDateTimeString(),
+                'products' => $productsDetails,
+                'message' => 'Order placed successfully',
+            ];
+        
+            // Return the JSON response
+            return response()->json($responseData, 200);
     }
-
-    // Prepare the response data 
-    $responseData = [
-        'order_id' => $order->id,
-        'total_price' => $order->total_price,
-        'status' => $order->status,
-        'payment_status' => $order->payment_status,
-        'delivery_address' => $order->delivery_address,
-        'delivery_method' => $order->delivery_method,
-        'created_at' => $order->created_at->toDateTimeString(),
-        'products' => $productsDetails,
-        'message' => 'Order placed successfully',
-    ];
-
-    // Return the JSON response
-    return response()->json($responseData, 200);
-}
     
 
 }
