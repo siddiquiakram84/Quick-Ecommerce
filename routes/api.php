@@ -73,6 +73,7 @@ Route::post('/user/register', [UserAuthController::class, 'register']);
 Route::prefix('user')->middleware('auth:sanctum')->group(function () {
     Route::post('/place-order', [OrderController::class, 'placeOrder']);
     Route::get('/orders', [OrderController::class, 'show']);
+    Route::get('/orders/{id}', [OrderController::class, 'index']);
     Route::post('/cart/add', [CartController::class, 'addToCart']);
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/products', [ProductController::class, 'index']);

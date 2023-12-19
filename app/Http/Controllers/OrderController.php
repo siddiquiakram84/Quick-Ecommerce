@@ -13,19 +13,20 @@ use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('products')->get();
+        $orders = Order::where('id', $request->id)->get();
         return response()->json($orders, 200);
     }
 
-    public function show(Request $request)
+    public function show()
     {
         // Get the authenticated user
         $user = Auth::user();
 
         // Get the cart items for the user with product details
-        $order = Order::findOrFail('user_id', $user->id)->with('products')->get();
+        $order = Order::where('user_id', $user->id)->with('products')->get();
+        
         return response()->json($order, 200);
     }
 
