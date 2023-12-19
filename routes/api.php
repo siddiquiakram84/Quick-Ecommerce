@@ -70,7 +70,7 @@ Route::prefix('admin')->group(function () {
 });
 Route::post('/user/login', [UserAuthController::class, 'login']);
 Route::post('/user/register', [UserAuthController::class, 'register']);
-Route::prefix('user')->middleware('auth:sanctum')->group(function () {
+Route::prefix('user')->group(function () {
     Route::post('/place-order', [OrderController::class, 'placeOrder']);
     Route::get('/orders', [OrderController::class, 'show']);
     Route::get('/orders/{id}', [OrderController::class, 'index']);
