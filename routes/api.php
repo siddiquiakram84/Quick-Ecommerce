@@ -28,8 +28,18 @@ use App\Models\Category;
 // EnsureFrontendRequestsAreStateful middleware is essential for stateful authentication
 
 
-// Group for Admin routes
+// Home page features
+Route::get('/products/search', [ProductController::class, 'search']);
+Route::post('/cart/add', [CartController::class, 'addToCart']);
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/product/{id}', [ProductController::class, 'viewProduct']);
+Route::get('/category/{id}', [CategoryController::class, 'show']);
+// View cart and delete cart
+Route::get('/cart/{cartId}', [CartController::class, 'viewSingleCart']);
+Route::delete('/cart/{cartId}', [CartController::class, 'deleteSingleCart']);
 
+// Group for Admin routes
 Route::prefix('admin')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login']);
     Route::post('/register', [AdminAuthController::class, 'register']);
@@ -59,39 +69,21 @@ Route::prefix('admin')->group(function () {
 
 });
 
-Route::prefix('user')->group(function () {
-    Route::get('/view-cart/{id}', [CartController::class, 'viewSingleCart']);
+Route::prefix('user')->middleware('auth:sanctum')->group(function () {
     Route::post('/login', [UserAuthController::class, 'login']);
     Route::post('/register', [UserAuthController::class, 'register']);
-    Route::post('/order/place', [OrderController::class, 'placeOrder']);
-    Route::get('/orders', [OrderController::class, 'viewOrders']);
-    Route::get('/orders/{id}', [OrderController::class, 'viewOrder']);
+    Route::post('/place-order', [OrderController::class, 'placeOrder']);
+    Route::get('/orders', [OrderController::class, 'show']);
     Route::post('/cart/add', [CartController::class, 'addToCart']);
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/product/{id}', [ProductController::class, 'show']);
     Route::get('/category/{id}', [CategoryController::class, 'show']);
-
+    Route::get('/cart/{id}', [CartController::class, 'viewSingleCart']);
+    Route::delete('/cart/{id}', [CartController::class, 'deleteSingleCart']);
 });
-
-// Home page features
-Route::get('/products/search', [ProductController::class, 'search']);
-Route::post('/cart/add', [CartController::class, 'addToCart']);
-Route::delete('/delete-cart', [CartController::class, 'deleteCart']);
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/product/{id}', [ProductController::class, 'viewProduct']);
-Route::get('/category/{id}', [CategoryController::class, 'show']);
-Route::get('/cart/{cartId}', [CartController::class, 'viewSingleCart']);
-Route::delete('/cart/{cartId}', [CartController::class, 'deleteSingleCart']);
-// In your routes file
-Route::middleware('auth:sanctum')->get('/view-orders', [OrderController::class, 'viewOrders']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
     Route::get('admin/me', [AdminAuthController::class, 'adminMe']);
-    Route::resource('orders', 'OrderController');
-    Route::resource('user', 'UserController');
-    // Route::get('/user/cart/{cartId}', [CartController::class, 'viewSingleCart']);
-    // Route::delete('/user/cart/{cartId}', [CartController::class, 'deleteSingleCart']);
 });
