@@ -56,8 +56,8 @@ class UserAuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
-            // Check if the user status is active
-            if ($user->status === UserStatusEnums::ACTIVE) { 
+            // Check if the user status is active $user->status === UserStatusEnums::ACTIVE
+            if ($user->role == UserRoleEnums::USER) { 
                 // User is active, generate an authentication token
                 $token = $user->createToken('user_auth_token')->plainTextToken;
 
@@ -83,6 +83,18 @@ class UserAuthController extends Controller
         // If authentication fails, throw a validation exception
         throw ValidationException::withMessages([
             'email' => ['Invalid credentials.'],
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $user = $request->user();
+        // Revoke the user's access token
+        $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'user logout successful.',
         ]);
     }
 

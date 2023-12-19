@@ -70,12 +70,18 @@ Route::prefix('admin')->group(function () {
 });
 Route::post('/user/login', [UserAuthController::class, 'login']);
 Route::post('/user/register', [UserAuthController::class, 'register']);
-Route::middleware(['auth:sanctum'])->group(function () {
+
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+
     Route::post('/user/place-order', [OrderController::class, 'placeOrder']);
     Route::get('/user/orders', [OrderController::class, 'show']);
+    Route::post('/user/logout', [UserAuthController::class, 'logout']);
+    Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
+    Route::get('admin/me', [AdminAuthController::class, 'adminMe']);
 });
 
-Route::prefix('user')->group(function () {
+Route::prefix('user')->group(function () { 
     
     Route::get('/orders/{id}', [OrderController::class, 'index']);
     Route::post('/cart/add', [CartController::class, 'addToCart']);
@@ -85,9 +91,4 @@ Route::prefix('user')->group(function () {
     Route::get('/category/{id}', [CategoryController::class, 'show']);
     Route::get('/cart/{id}', [CartController::class, 'viewSingleCart']);
     Route::delete('/cart/{id}', [CartController::class, 'deleteSingleCart']);
-});
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
-    Route::get('admin/me', [AdminAuthController::class, 'adminMe']);
 });

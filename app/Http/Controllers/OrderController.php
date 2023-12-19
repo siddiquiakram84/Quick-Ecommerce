@@ -32,22 +32,6 @@ class OrderController extends Controller
         return response()->json($order, 200);
     }
 
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'total_price' => 'required|numeric',
-            'status' => 'required|string|in:Delivered,Pending,Processing',
-            'payment_status' => 'required|integer|in:0, 1', // 0 for pending, 1 for paid.
-            'delivery_address' => 'nullable|string',
-            'delivery_method' => 'nullable|string',
-        ]);
-
-        $order = Order::create($validatedData);
-
-        return response()->json($order, 201);
-    }
-
     public function update(Request $request, $id)
     {
         $order = Order::findOrFail($id);
