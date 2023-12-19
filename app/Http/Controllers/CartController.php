@@ -70,7 +70,8 @@ class CartController extends Controller
 
         // Retrieve the single cart by its ID for the user with associated products
         $cart = Cart::where('id', $cartId)->first();
-        $cart['product'] = Order::find($cart['product_id']);
+
+        $cart['product'] = Product::find($cart['product_id']);
 
         if (!$cart) {
             return response()->json([
