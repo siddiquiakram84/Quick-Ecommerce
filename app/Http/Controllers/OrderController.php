@@ -62,9 +62,10 @@ class OrderController extends Controller
     {
         // Get the authenticated user
         $user = Auth::user();
+
         // Get the cart items for the user with product details
         $cartItems = Cart::where('user_id', $user->id)->with('products')->get();
-    
+
         // Calculate the total price based on the prices of items in the cart
         $totalPrice = $cartItems->sum(function ($cartItem) {
             return $cartItem->total_price;
