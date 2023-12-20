@@ -19,7 +19,6 @@ class CartController extends Controller
         $validatedData = $request->validate([
             'user_id' => 'sometimes|exists:users,id',
             'product_id' => 'required|exists:products,id',
-            'order_id' => 'sometimes|exists:orders,id',
             'quantity' => 'required|integer|min:1',
         ]);
 
@@ -36,7 +35,7 @@ class CartController extends Controller
 
         // Get the current cart items
         $cartItems = $cart->cartitem ?? [];
-        // dd($cartItems);
+
         // Check if the product already exists in the cart
         $existingItemIndex = array_search($validatedData['product_id'], array_column($cartItems, 'product_id'));
 
@@ -77,40 +76,8 @@ class CartController extends Controller
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public function deleteSingleCart($cartId)
     {
-        // Get the authenticated user or null if not authenticated
-        $user = Auth::user();
 
         // Delete the single cart by its ID for the user
         $deletedCart = Cart::where('id', $cartId)->delete();
@@ -128,42 +95,40 @@ class CartController extends Controller
         ], 404);
     }
 
-        public function viewSingleCart()
+    public function viewSingleCart($cartId)
     {
-        $user_id = auth()->id();
+        $cartItem = Cart::find($cartId);
 
-        try {
-            $cart = Cart::where('user_id', $user_id)->firstOrFail();
-            $cartItems = $cart->cartitem ?? [];
+        // Access the cartitem attribute from the model
+        $cartItemData = $cartItem->cartitem;
 
-            // Fetch product details for each cart item
-            $formattedCartItems = array_map(function ($cartItem) {
-                $product = Product::find($cartItem['product_id']);
+        // Fetch product details for each cart item
+        $formattedCartItems = array_map(function ($cartItem) {
+            $product = Product::find($cartItem['product_id']);
 
-                return [
-                    'product_id' => $cartItem['product_id'],
-                    'quantity' => $cartItem['quantity'],
-                    'product' => $product, // Product details
-                ];
-            }, $cartItems);
+            return [
+                'product_id' => $cartItem['product_id'],
+                'quantity' => $cartItem['quantity'],
+                'product' => $product,
+            ];
+        }, $cartItemData);
 
-            return response()->json(['message' => 'Cart retrieved successfully', 'cart' => $formattedCartItems]);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Cart not found'], 404);
-        }
+        return response()->json(['message' => 'Cart retrieved successfully', 'cart' => $formattedCartItems]);
     }
+
 
     public function removeProductFromCart(Request $request)
     {
-        $request->validate([
+        $validateData = $request->validate([
+            'user_id' => 'sometimes|exists:users,id',
             'product_id' => 'required|exists:products,id',
+            'cart_id' => 'required|exists:carts,id'
         ]);
 
-        $user_id = auth()->id();
         $productId = $request->input('product_id');
 
         try {
-            $cart = Cart::where('user_id', $user_id)->firstOrFail();
+            $cart = Cart::where('user_id', $validateData['user_id'] ?? null)->firstOrFail();
             $cartItems = $cart->cartitem ?? [];
 
             $existingItemIndex = array_search($productId, array_column($cartItems, 'product_id'));

@@ -40,7 +40,7 @@ Route::get('/product/{id}', [ProductController::class, 'show']);
 Route::get('/category/{id}', [CategoryController::class, 'show']);
 Route::get('/cart/{cartId}', [CartController::class, 'viewSingleCart']);
 Route::delete('/cart/{cartId}', [CartController::class, 'deleteSingleCart']);
-
+Route::delete('/cart', [CartController::class, 'removeProductFromCart']);
 
 // Group for Admin routes
 Route::prefix('admin')->group(function () {
