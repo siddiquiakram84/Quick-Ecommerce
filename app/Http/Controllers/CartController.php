@@ -25,7 +25,7 @@ class CartController extends Controller
         // Find the product
         $product = Product::findOrFail($validatedData['product_id']);
 
-        $user_id = $validatedData['user_id'];
+        $user_id = $validatedData['user_id'] ?? null;
         $cart = Cart::where('user_id', $user_id)->first();
 
         if (!$cart) {
