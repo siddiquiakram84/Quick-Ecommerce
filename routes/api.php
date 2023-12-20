@@ -28,6 +28,9 @@ use App\Models\Category;
 // EnsureFrontendRequestsAreStateful middleware is essential for stateful authentication
 
 
+
+
+
 // Home page features
 Route::get('/products/search', [ProductController::class, 'search']);
 Route::post('/cart/add', [CartController::class, 'addToCart']);
@@ -37,6 +40,7 @@ Route::get('/product/{id}', [ProductController::class, 'show']);
 Route::get('/category/{id}', [CategoryController::class, 'show']);
 Route::get('/cart/{cartId}', [CartController::class, 'viewSingleCart']);
 Route::delete('/cart/{cartId}', [CartController::class, 'deleteSingleCart']);
+
 
 // Group for Admin routes
 Route::prefix('admin')->group(function () {
@@ -88,6 +92,4 @@ Route::prefix('user')->group(function () {
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/product/{id}', [ProductController::class, 'show']);
     Route::get('/category/{id}', [CategoryController::class, 'show']);
-    Route::get('/cart/{id}', [CartController::class, 'viewSingleCart']);
-    Route::delete('/cart/{id}', [CartController::class, 'deleteSingleCart']);
 });
