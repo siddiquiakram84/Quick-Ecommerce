@@ -38,7 +38,7 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/product/{id}', [ProductController::class, 'show']);
 Route::get('/category/{id}', [CategoryController::class, 'show']);
-Route::get('/cart', [CartController::class, 'viewSingleCart']);
+Route::get('/cart/{cartId}', [CartController::class, 'viewSingleCart']);
 Route::delete('/cart/{cartId}', [CartController::class, 'deleteSingleCart']);
 Route::delete('/cart', [CartController::class, 'removeProductFromCart']);
 

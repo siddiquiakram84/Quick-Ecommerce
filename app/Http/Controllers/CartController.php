@@ -113,21 +113,17 @@ class CartController extends Controller
         ], 404);
     }
 
-    public function viewSingleCart(Request $request)
-{
-    $validatedData = $request->validate([
-        'cart_id' => 'sometimes|exists:carts,id',
-    ]);
-
-    $formattedCartItems = [];
-
-    if (isset($validatedData['cart_id'])) {
-        // 'cart_id' is provided, find the Cart model by its ID
-        $cart = Cart::find($validatedData['cart_id']);
+    public function viewSingleCart($cartId)
+    {
+        
+        $cart = Cart::find($cartId);
 
         if (!$cart) {
             // Handle the case where the cart is not found
-            return response()->json(['message' => 'Cart not found'], 404);
+            $resp['status'] = false;
+            $resp['message'] = 'Cart not found';
+            $resp['data'] = $cart;
+            return response()->json([$resp], 404);
         }
 
         // Access the cartitem attribute from the model
@@ -149,10 +145,13 @@ class CartController extends Controller
                 ];
             }
         }
-    }
 
-    return response()->json(['message' => 'Cart retrieved successfully', 'cart' => $formattedCartItems]);
-}
+    $resp['status'] = true;
+    $resp['message'] = 'Cart retrieved successfully';
+    $resp['data'] = $formattedCartItems;
+
+    return response()->json([$resp], 200);
+    }
 
 
     public function removeProductFromCart(Request $request)
