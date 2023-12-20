@@ -113,26 +113,46 @@ class CartController extends Controller
         ], 404);
     }
 
-    public function viewSingleCart($cartId)
-    {
-        $cartItem = Cart::find($cartId);
+    public function viewSingleCart(Request $request)
+{
+    $validatedData = $request->validate([
+        'cart_id' => 'sometimes|exists:carts,id',
+    ]);
+
+    $formattedCartItems = [];
+
+    if (isset($validatedData['cart_id'])) {
+        // 'cart_id' is provided, find the Cart model by its ID
+        $cart = Cart::find($validatedData['cart_id']);
+
+        if (!$cart) {
+            // Handle the case where the cart is not found
+            return response()->json(['message' => 'Cart not found'], 404);
+        }
 
         // Access the cartitem attribute from the model
-        $cartItemData = $cartItem->cartitem;
+        $cartItems = $cart->cartitem;
 
         // Fetch product details for each cart item
-        $formattedCartItems = array_map(function ($cartItem) {
+        $formattedCartItems = [];
+
+        foreach ($cartItems as $cartItem) {
+            // Find the Product model by its ID
             $product = Product::find($cartItem['product_id']);
 
-            return [
-                'product_id' => $cartItem['product_id'],
-                'quantity' => $cartItem['quantity'],
-                'product' => $product,
-            ];
-        }, $cartItemData);
-
-        return response()->json(['message' => 'Cart retrieved successfully', 'cart' => $formattedCartItems]);
+            if ($product) {
+                // Add formatted cart item to the result array
+                $formattedCartItems[] = [
+                    'product_id' => $cartItem['product_id'],
+                    'quantity' => $cartItem['quantity'],
+                    'product' => $product,
+                ];
+            }
+        }
     }
+
+    return response()->json(['message' => 'Cart retrieved successfully', 'cart' => $formattedCartItems]);
+}
 
 
     public function removeProductFromCart(Request $request)

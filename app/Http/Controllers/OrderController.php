@@ -89,7 +89,6 @@ class OrderController extends Controller
         $productsDetails = [];
     
         // Attach products to the order with pivot data
-        // Attach products to the order with pivot data
         foreach ($cartItems as $cartItem) {
             // Check if the product relationship is not null
             if ($cartItem->product) {
