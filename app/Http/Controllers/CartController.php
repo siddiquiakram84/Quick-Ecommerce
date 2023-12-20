@@ -70,7 +70,7 @@ class CartController extends Controller
         // Update the total_price column in the cart model
         $cart->update(['total_price' => $totalPrice]);
         $resp['success'] = true;
-        $resp['cart'] = $cart;
+        $resp['data'] = $cart;
 
         return response()->json([$resp], 200);
     }
