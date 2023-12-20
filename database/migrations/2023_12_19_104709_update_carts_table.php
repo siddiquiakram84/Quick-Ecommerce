@@ -14,6 +14,7 @@ return new class extends Migration
         // Add 'cartitem' column with JSON data type
         Schema::table('carts', function (Blueprint $table) {
             // $table->json('cartitem')->after('status')->nullable();
+            $table->dropColumn('order_id');
         });
 
         // Remove the 'order_id' foreign key constraint
