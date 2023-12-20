@@ -125,28 +125,32 @@ class CartController extends Controller
             'cart_id' => 'required|exists:carts,id'
         ]);
 
-        $productId = $request->input('product_id');
+        $productId = $validateData['product_id'];
 
-        try {
-            $cart = Cart::where('user_id', $validateData['user_id'] ?? null)->firstOrFail();
-            $cartItems = $cart->cartitem ?? [];
 
-            $existingItemIndex = array_search($productId, array_column($cartItems, 'product_id'));
+        $cart = Cart::find($validateData['cart_id']);
 
-            if ($existingItemIndex !== false) {
-                // Remove the product from the cart
-                array_splice($cartItems, $existingItemIndex, 1);
+        $cartItems = $cart->cartitem;
 
-                // Update the cart with the updated cart items
-                $cart->update(['cartitem' => $cartItems]);
+        $existingItemIndex = array_search($productId, array_column($cartItems, 'product_id'));
 
-                return response()->json(['message' => 'Product removed from cart successfully', 'cart' => $cartItems]);
-            } else {
-                return response()->json(['message' => 'Product not found in the cart'], 404);
-            }
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Cart not found'], 404);
+        if ($existingItemIndex !== false) {
+            // Remove the product from the cart
+            array_splice($cartItems, $existingItemIndex, 1);
+
+            // Update the cart with the updated cart items
+            $cart->update(['cartitem' => $cartItems]);
+            $resp['success'] = true;
+            $resp['message'] = 'Product removed from cart successfully';
+            $resp['data'] = $cartItems;
+            return response()->json([$resp], 200);
+        } 
+        else 
+        {
+        return response()->json(['message' => 'Product not found in the cart'], 404);
         }
+        return response()->json(['message' => 'Cart not found'], 404);
+
     }
 
 }
