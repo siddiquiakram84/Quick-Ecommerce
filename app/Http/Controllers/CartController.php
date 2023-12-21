@@ -118,6 +118,16 @@ class CartController extends Controller
             return response()->json([$resp], 404);
         }
 
+        $cartItemsWithStatus2 = Cart::find($cartId)
+            ->where('status', 2)
+            ->get();
+        if ($cartItemsWithStatus2) {
+            $resp['status'] = true;
+            $resp['message'] = 'No product found';
+            $resp['data'] = [];
+            return response()->json([$resp], 200);
+        }
+
         // Access the cartitem attribute from the model
         $cartItems = $cart->cartitem;
 
