@@ -26,14 +26,6 @@ class CartController extends Controller
         $product = Product::findOrFail($validatedData['product_id']);
 
         $user_id = $validatedData['user_id'] ?? null;
-        
-        // $cart = Cart::where('user_id', $user_id)->first();
-
-        // if (!$cart) {
-        //     $cart = new Cart([$validatedData['user_id'], 'cartitem' => []]);
-        //     $cart->save();
-        // }
-
         $cart = null;
 
         if ($user_id) {
