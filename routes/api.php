@@ -42,6 +42,7 @@ Route::get('/cart/{cartId}', [CartController::class, 'viewSingleCart']);
 Route::delete('/cart/{cartId}', [CartController::class, 'deleteSingleCart']);
 Route::delete('/cart', [CartController::class, 'removeProductFromCart']);
 
+
 // Group for Admin routes
 Route::prefix('admin')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login']);
@@ -75,6 +76,7 @@ Route::prefix('admin')->group(function () {
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
+    Route::get('/user/fetch-user', [UserController::class, 'fetchDetails']);
     Route::post('/user/place-order', [OrderController::class, 'placeOrder']);
     Route::get('/user/orders', [OrderController::class, 'show']);
     Route::get('/user/orders/{id}', [OrderController::class, 'index']);

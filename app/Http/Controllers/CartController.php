@@ -18,70 +18,81 @@ class CartController extends Controller
     {
         $validatedData = $request->validate([
             'user_id' => 'sometimes|exists:users,id',
+            'cart_id' => 'sometimes|exists:carts,id',
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
         ]);
-
+    
         // Find the product
         $product = Product::findOrFail($validatedData['product_id']);
-
+    
         $user_id = $validatedData['user_id'] ?? null;
+        $cart_id = $validatedData['cart_id'] ?? null;
         $cart = null;
-
-        if ($user_id) {
-            // If user_id is provided, try to find an existing cart
+    
+        // If cart_id is provided, try to find an existing cart
+        if ($cart_id) {
+            $cart = Cart::find($cart_id);
+        }
+    
+        // If no cart found and user_id is provided, try to find an existing cart by user_id
+        if (!$cart && $user_id) {
             $cart = Cart::where('user_id', $user_id)->first();
         }
-
+    
+        // If no cart found, or if both cart_id and user_id are null, create a new cart
         if (!$cart) {
-            // If no cart found, or if user_id is null, create a new cart
             $cart = new Cart([
                 'user_id' => $user_id,
                 'cartitem' => [],
             ]);
-            
+    
             $cart->save();
+        } elseif ($user_id && $cart->user_id !== $user_id) {
+            // If user_id is provided and differs from the current user_id in the cart, update it
+            $cart->update(['user_id' => $user_id]);
         }
-
+    
         // Get the current cart items
         $cartItems = $cart->cartitem ?? [];
-
+    
         // Check if the product already exists in the cart
         $existingItemIndex = array_search($validatedData['product_id'], array_column($cartItems, 'product_id'));
-
+    
+        // Update quantity if the product is already in the cart, otherwise add a new item
         if ($existingItemIndex !== false) {
-            // Update quantity if the product is already in the cart
             $cartItems[$existingItemIndex]['quantity'] += $validatedData['quantity'];
         } else {
-            // Add a new item to the cart
             $cartItems[] = ['product_id' => $validatedData['product_id'], 'quantity' => $validatedData['quantity']];
         }
-        
+    
         // Update the cart with the new cart items
         $cart->update(['cartitem' => $cartItems]);
-
+    
         // Recalculate total price in the cart if needed
         $totalPrice = 0;
         foreach ($cartItems as $item) {
             $product_id = $item["product_id"];
             $quantity = $item["quantity"];
-
+    
             // Fetch the product by product_id
             $product = Product::find($product_id);
-
+    
             if ($product) {
                 // Calculate the total price for this item
                 $itemTotalPrice = $quantity * $product->price;
-
+    
                 // Add the item's total price to the overall total price
                 $totalPrice += $itemTotalPrice;
             }
         }
+    
         // Update the total_price column in the cart model
         $cart->update(['total_price' => $totalPrice]);
+    
         $resp['success'] = true;
         $resp['data'] = $cart;
-
+    
         return response()->json([$resp], 200);
     }
 

@@ -39,6 +39,15 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         return response()->json($user, 200);
     }
+    public function fetchDetails()
+    {
+        $user = Auth::user();
+        $user_details = User::find($user->id);
+        $resp['success'] = true;
+        $resp['message'] = 'User data retrieved successfully.';
+        $resp['data'] = $user_details;
+        return response()->json([$resp], 200);
+    }
 
     public function store(Request $request)
     {
