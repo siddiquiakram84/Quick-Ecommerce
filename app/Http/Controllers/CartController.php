@@ -117,16 +117,17 @@ class CartController extends Controller
             $resp['data'] = $cart;
             return response()->json([$resp], 404);
         }
+ 
+        $cartItemsWithStatusCompleted = Cart::find($cartId);
 
-        $cartItemsWithStatus2 = Cart::find($cartId)
-            ->where('status', 2)
-            ->get();
-        if ($cartItemsWithStatus2) {
+        if ($cartItemsWithStatusCompleted && $cartItemsWithStatusCompleted->status == 2) {
             $resp['status'] = true;
             $resp['message'] = 'No product found';
             $resp['data'] = [];
             return response()->json([$resp], 200);
         }
+        else
+        {
 
         // Access the cartitem attribute from the model
         $cartItems = $cart->cartitem;
@@ -148,11 +149,12 @@ class CartController extends Controller
             }
         }
 
-    $resp['status'] = true;
-    $resp['message'] = 'Cart retrieved successfully';
-    $resp['data'] = $formattedCartItems;
+        $resp['status'] = true;
+        $resp['message'] = 'Cart retrieved successfully';
+        $resp['data'] = $formattedCartItems;
 
-    return response()->json([$resp], 200);
+        return response()->json([$resp], 200);
+        }
     }
 
 
