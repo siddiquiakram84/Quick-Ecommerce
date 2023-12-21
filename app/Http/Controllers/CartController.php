@@ -33,6 +33,8 @@ class CartController extends Controller
         // If cart_id is provided, try to find an existing cart
         if ($cart_id) {
             $cart = Cart::find($cart_id);
+            $cart->status = CartStatusEnums::PENDING; // Replace 'new_status' with the desired new status value
+            $cart->save();
         }
     
         // If no cart found and user_id is provided, try to find an existing cart by user_id
@@ -49,8 +51,11 @@ class CartController extends Controller
     
             $cart->save();
         } elseif ($user_id && $cart->user_id !== $user_id) {
+            $resp['status'] = false;
+            $resp['message'] = 'Invalid Request, Please Try Again.';
+            return response()->json([$resp], 400);
             // If user_id is provided and differs from the current user_id in the cart, update it
-            $cart->update(['user_id' => $user_id]);
+            // $cart->update(['user_id' => $user_id]);
         }
     
         // Get the current cart items
