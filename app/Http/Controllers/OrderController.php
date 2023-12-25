@@ -51,8 +51,15 @@ class OrderController extends Controller
 
     public function show()
     {
+        
         // Get the authenticated user
         $user = Auth::user();
+        if (! $user->id){
+            $order = Order::get();
+            $resp['success'] = 'All order data retrieved successfully.';
+            $resp['data'] = $order;
+            return response()->json([$resp], 200);
+        }
         // Get the cart items for the user with product details
         $order = Order::where('user_id', $user->id)->get();
 
