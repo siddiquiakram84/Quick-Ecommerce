@@ -20,8 +20,9 @@ class OrderController extends Controller
     public function index(Request $request)
     {   // Get the authenticated user
         $user = Auth::user();
-        dd($user);
+        
         $user_id = $user->id;
+        dd($user_id);
         if (! $user_id){
             // Get all orders from the database
             $orders = Order::all();
