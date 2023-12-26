@@ -18,11 +18,13 @@ class OrderController extends Controller
 
     
     public function index(){
+        // Get the authentic user only
+        $user = Auth::user();
         // Get all orders from the database
         $orders = Order::all();
         $resp['success'] = true;
         $resp['message'] = 'Orderes retrieved successfully.';
-        $resp['data'] = $resp;
+        $resp['data'] = $orders;
         
         // Return a response, e.g., as JSON
         return response()->json([$resp], 200);
