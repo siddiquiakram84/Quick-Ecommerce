@@ -15,20 +15,32 @@ use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
+
+    
     public function index(Request $request)
     {   // Get the authenticated user
         $user = Auth::user();
         $user_id = $user->id;
-
+        if (! $user_id){
+            // Get all orders from the database
+            $orders = Order::all();
+            $resp['success'] = true;
+            $resp['message'] = 'Orderes retrieved successfully.';
+            $resp['data'] = $resp;
+            
+            // Return a response, e.g., as JSON
+            return response()->json([$resp], 200);
+        }
+        
         $cart = Cart::where('user_id', $user_id)->first();
         // Get the current cart items
         $cartItems = $cart->cartitem ?? [];
         // Access the cartitem attribute from the model
         $cartItems = $cart->cartitem;
-
+        
         // Fetch product details for each cart item
         $formattedCartItems = [];
-
+        
         foreach ($cartItems as $cartItem) {
             // Find the Product model by its ID
             $product = Product::find($cartItem['product_id']);
@@ -48,34 +60,28 @@ class OrderController extends Controller
         $resp['data'] = [$orders, $formattedCartItems];
         return response()->json($resp, 200);
     }
-
+    
     public function show()
     {
         
         // Get the authenticated user
         $user = Auth::user();
-        if (! $user->id){
-            $order = Order::get();
-            $resp['success'] = 'All order data retrieved successfully.';
-            $resp['data'] = $order;
-            return response()->json([$resp], 200);
-        }
         // Get the cart items for the user with product details
         $order = Order::where('user_id', $user->id)->get();
-
+        
         $cart = Cart::where('user_id', $user->id)->first();
         // Get the current cart items
         $cartItems = $cart->cartitem ?? [];
         // Access the cartitem attribute from the model
         $cartItems = $cart->cartitem;
-
+        
         // Fetch product details for each cart item
         $formattedCartItems = [];
-
+        
         foreach ($cartItems as $cartItem) {
             // Find the Product model by its ID
             $product = Product::find($cartItem['product_id']);
-
+            
             if ($product) {
                 // Add formatted cart item to the result array
                 $formattedCartItems[] = [
@@ -89,6 +95,25 @@ class OrderController extends Controller
         $resp['message'] = 'Order details retrieved successfully.';
         $resp['data'] = [$order, $formattedCartItems];
         return response()->json($resp, 200);
+    }
+    
+    public function store(Request $request)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'total_price' => 'required|numeric',
+            'status' => 'required|string|in:Delivered,Pending,Processing',
+            'payment_status' => 'required|integer|in:0, 1', // 0 for pending, 1 for paid.
+            'delivery_address' => 'nullable|string',
+            'delivery_method' => 'nullable|string',
+        ]);
+
+        // Create a new order in the database
+        $order = Order::create($validatedData);
+
+        // Return a response, e.g., as JSON
+        return response()->json($order, 201); // 201 Created
     }
 
     public function update(Request $request, $id)
