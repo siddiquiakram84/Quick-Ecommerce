@@ -80,6 +80,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/user/place-order', [OrderController::class, 'placeOrder']);
     Route::get('/user/orders', [OrderController::class, 'show']);
     Route::get('/user/orders/{id}', [OrderController::class, 'index']);
+    Route::get('/admin/orders', [OrderController::class, 'index']);
     Route::post('/user/logout', [UserAuthController::class, 'logout']);
     Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
     Route::get('admin/me', [AdminAuthController::class, 'adminMe']);
