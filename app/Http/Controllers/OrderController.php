@@ -17,22 +17,22 @@ class OrderController extends Controller
 {
 
     
-    public function index(Request $request)
+    public function index(){
+        // Get all orders from the database
+        $orders = Order::all();
+        $resp['success'] = true;
+        $resp['message'] = 'Orderes retrieved successfully.';
+        $resp['data'] = $resp;
+        
+        // Return a response, e.g., as JSON
+        return response()->json([$resp], 200);
+    }
+
+    public function indexView(Request $request)
     {   // Get the authenticated user
         $user = Auth::user();
         
         $user_id = $user->id;
-        dd($user_id);
-        if (! $user_id){
-            // Get all orders from the database
-            $orders = Order::all();
-            $resp['success'] = true;
-            $resp['message'] = 'Orderes retrieved successfully.';
-            $resp['data'] = $resp;
-            
-            // Return a response, e.g., as JSON
-            return response()->json([$resp], 200);
-        }
         
         $cart = Cart::where('user_id', $user_id)->first();
         // Get the current cart items

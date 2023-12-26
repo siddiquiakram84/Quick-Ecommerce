@@ -68,9 +68,6 @@ Route::prefix('admin')->group(function () {
     // Admin Dashboard route
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
-    // Order history
-    Route::get('/history', [OrderProductController::class, 'index']);
-
 });
 
 
@@ -79,7 +76,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user/fetch-user', [UserController::class, 'fetchDetails']);
     Route::post('/user/place-order', [OrderController::class, 'placeOrder']);
     Route::get('/user/orders', [OrderController::class, 'show']);
-    Route::get('/user/orders/{id}', [OrderController::class, 'index']);
+    Route::get('/user/orders/{id}', [OrderController::class, 'indexView']);
     Route::get('/admin/orders', [OrderController::class, 'index']);
     Route::post('/user/logout', [UserAuthController::class, 'logout']);
     Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
